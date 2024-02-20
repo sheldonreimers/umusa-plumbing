@@ -10,6 +10,10 @@ from datetime import timedelta
 from tqdm.notebook import tqdm, trange
 from datetime import datetime as dt
 
+<<<<<<< HEAD
 sys.path.append('config')
+=======
+sys.path.append('/config')
+>>>>>>> f8db2bd (repo setup)
 from lib import GoogleSheets
 from lib import ServiceM8
