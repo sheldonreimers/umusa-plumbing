@@ -30,6 +30,14 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
+          cache: 'pip'
+
+      # Restore cached dependencies
+      - name: Restore cached dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('config/requirements.txt') }}
 
       # Install dependencies
       - name: Install dependencies
@@ -39,8 +47,11 @@ jobs:
       - name: Inventory Manager
         run: python inventory_manager/inventory.py
 
-      # Runs a set of commands using the runners shell
-      # - name: Run a multi-line script
-      #   run: |
-      #     echo Add other actions to build,
-      #     echo test, and deploy your project.
+      # Cache dependencies for future runs
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('config/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
