@@ -10,6 +10,6 @@ from datetime import timedelta
 from tqdm.notebook import tqdm, trange
 from datetime import datetime as dt
 
-sys.path.append(home_dir+'/config')
+sys.path.append('config')
 from lib import GoogleSheets
 from lib import ServiceM8
