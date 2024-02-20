@@ -1,35 +1,5 @@
-# Python SSL certificate checker
-certifi==2021.10.8
-
-# CFFI: Foreign Function Interface for calling C code from Python
-cffi==1.14.6
-
-# Encoding and decoding library
-charset-normalizer==2.0.10
-
-# Cryptography library for Python
-cryptography==35.0.0
-
-# Python decorator module for functions and methods
-decorator==5.1.1
-
 # Comprehensive HTTP client library in Python
 httplib2==0.22.0
-
-# Internationalized Domain Names handling library
-idna==3.3
-
-# ISO 8601 date/time parser and formatter
-isodate==0.6.1
-
-# Python client library for interacting with Jira
-jira==3.5.2
-
-# Library for processing XML and HTML in Python
-lxml==5.1.0
-
-# Library with additional itertools for Python
-more-itertools==8.10.0
 
 # Powerful data structures and data analysis tools for Python
 numpy==1.26.2
@@ -40,77 +10,14 @@ oauth2client==4.1.3
 # Data manipulation and analysis library
 pandas==1.3.4
 
-# Library for manipulating datetimes in Python
-pendulum==2.1.2
-
-# Interface to platform-specific directories for Python
-platformdirs==4.0.0
-
-# Python library to create HTML tables in a pretty format
-pretty-html-table==0.9.16
-
-# Testing tools for Python
-py==1.11.0
-
-# ASN.1 types and codecs library
-pyasn1==0.4.8
-
-# A collection of ASN.1 modules for Python
-pyasn1-modules==0.2.8
-
-# C parser and library for Python
-pycparser==2.21
-
-# Python library for JSON Web Tokens (JWT)
-PyJWT==2.3.0
-
-# Parsing library for Python
-pyparsing==3.0.6
-
-# Apache Spark's Python API
-pyspark==3.2.0
-
-# Extensions to the Python standard library's datetime module
-python-dateutil==2.8.2
-
 # Time zone library for Python
 pytz==2021.3
-
-# Time zone data for Python
-pytzdata==2020.1
 
 # HTTP library for Python
 # requests==2.26.0
 
-# A file interface for requests
-requests-file==1.5.1
-
-# A collection of utility belts for Python requests
-requests-toolbelt==0.9.1
-
-# Simple module for retrying code until it succeeds
-retry==0.9.2
-
-# RSA algorithm implementation for Python
-rsa==4.7.2
-
-# Python client library for Salesforce
-simple-salesforce==1.12.5
-
-# Python package that provides utilities for Python 3 projects
-six==1.16.0
-
-# Python client for Slack's Web API
-slack-sdk==3.23.0
-
-# Time zone library for Python
-tzdata==2023.3
-
 # Python HTTP library with thread-safe connection pooling
 urllib3==1.26.7
-
-# SOAP client for Python
-zeep==4.2.1
 
 # Client library for accessing Google APIs
 google-api-python-client==1.12.8
@@ -121,80 +28,5 @@ google-auth==1.35.0
 # Python library to support Google Auth with HTTP libraries
 google-auth-httplib2==0.0.4
 
-# Data manipulation and analysis library
-matplotlib==3.5.0
-
-# Machine learning library for Python
-scikit-learn==1.3.2
-
-# Statistical models library for Python
-statsmodels==0.14.0
-
-# Data visualization library based on matplotlib
-seaborn==0.13.0
-
-# Scientific computing library for Python
-scipy==1.11.4
-
-# PostgreSQL adapter for Python
-# psycopg2==2.9.9 -- Contains a run error
-
-# PostgreSQL adapter for Python (binary)
-psycopg2-binary==2.9.9
-
-# SQL toolkit and Object-Relational Mapping library for Python
-sqlalchemy==1.4.25
-
-# Text processing library for Python
-textblob==0.15.3
-
-# Natural language detection library
-nltk==3.6.5
-
-# Language detection library
-langdetect==1.0.9
-
-# Template engine for Python
-Jinja2
-
-# Web scraping library for Python
-beautifulsoup4==4.10.0
-
-# Toolkit for working with databases in Python
-dataset==1.5.0
-
-# Probabilistic data structure library for Python
-datasketch==1.5.1
-
 # A fast, extensible progress bar for Python
 tqdm==4.62.3
-
-# Utility library for Python
-retrying==1.3.3
-
-# Task scheduling library for Python
-futures==3.1.1
-
-# Serialization library for Python
-dill==0.3.4
-
-# Python module for accessing browser cookies
-browsercookie==0.7.7
-
-# Python tool for code analysis
-flake8==4.0.1
-
-# Testing framework for Python
-pytest==6.2.5
-
-# Documentation generator for Python projects
-sphinx==4.3.0
-
-# Markdown to reStructuredText converter
-m2r==0.2.1
-
-Django==4.2.7
-
-streamlit==1.28.2
-
-Flask==3.0.0
