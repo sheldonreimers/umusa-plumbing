@@ -111,8 +111,8 @@ class ServiceM8():
         
 
 class GoogleSheets():
-    def __init__(self,secret_path):
-        creds = service_account.Credentials.from_service_account_file(secret_path)
+    def __init__(self,service_secret):
+        creds = service_account.Credentials.from_service_account_info(service_secret)
         self.service = build('sheets', 'v4', credentials=creds).spreadsheets()
         
         self.value_service = self.service.values()
