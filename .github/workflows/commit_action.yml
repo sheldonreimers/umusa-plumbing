@@ -1,3 +1,19 @@
+# System Library Import & directories
+import os, sys
+home_dir = 'umusa-plumbing'
+
+# Working Libraries
+import time,requests,json,pytz
+import pandas as pd
+
+from datetime import timedelta
+from tqdm.notebook import tqdm, trange
+from datetime import datetime as dt
+
+sys.path.append('/config')
+from lib import GoogleSheets
+from lib import ServiceM8
+
 # This is a basic workflow to help you get started with Actions
 
 name: CI
@@ -38,14 +54,10 @@ jobs:
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('config/requirements.txt') }}
-
+            
       # Install dependencies
       - name: Install dependencies
         run: pip install -r config/requirements.txt
-
-      # Runs a single command using the runners shell
-      - name: Inventory Manager
-        run: python inventory_manager/inventory.py
 
       # Cache dependencies for future runs
       - name: Cache dependencies
@@ -55,3 +67,7 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('config/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
+
+      # Runs a single command using the runners shell
+      - name: Inventory Manager
+        run: python inventory_manager/inventory.py
