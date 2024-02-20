@@ -19,6 +19,6 @@ from lib import ServiceM8
 umusa_secret = os.environ.get('UMUSA_SECRET')
 servicem8_secret = os.environ.get('SERVICEM8_SECRET')
 
-# Print the secrets to verify
-print("UMUSA_SECRET:", umusa_secret)
-print("SERVICEM8_SECRET:", servicem8_secret)
+## Activating API Systems
+gpy = GoogleSheets(umusa_secret)
+sm8 = ServiceM8(servicem8_secret)
