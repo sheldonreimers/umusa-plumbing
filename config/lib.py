@@ -5,7 +5,6 @@ import json
 import pandas as pd
 import datetime as dt
 from datetime import datetime, timezone, timedelta
-from io import StringIO
 from retry import retry
 import numpy as np
 from requests.auth import HTTPBasicAuth
