@@ -16,7 +16,7 @@ from lib import GoogleSheets
 from lib import ServiceM8
 
 # Access the secrets from environment variables
-umusa_secret = os.environ.get('UMUSA_SECRET')
+umusa_secret = json.loads(os.environ.get('UMUSA_SECRET'))
 servicem8_secret = os.environ.get('SERVICEM8_SECRET')
 
 ## Activating API Systems
