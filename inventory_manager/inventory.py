@@ -17,3 +17,5 @@ sys.path.append('/config')
 >>>>>>> f8db2bd (repo setup)
 from lib import GoogleSheets
 from lib import ServiceM8
+
+print(os.environ.get('UMUSA_SECRET'))
