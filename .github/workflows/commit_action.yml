@@ -27,7 +27,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Inventory Manager
-        run: inventory_manager/inventory.py
+        run: python inventory_manager/inventory.py
 
       # Runs a set of commands using the runners shell
       # - name: Run a multi-line script
