@@ -7,7 +7,7 @@ import time,requests,json,pytz
 import pandas as pd
 
 from datetime import timedelta
-from tqdm.notebook import tqdm, trange
+# from tqdm.notebook import tqdm, trange
 from datetime import datetime as dt
 
 # Add the directory containing your custom libraries to the path
@@ -58,14 +58,14 @@ latest_responses = [d for d in all_form_responses if previous_monday_str <= d['t
 
 updated_responses = []
 
-for x in tqdm(range(len(latest_responses)), desc='primary_factoring'):
+for x in range(len(latest_responses)):
     responded_at = latest_responses[x]['timestamp']
     staff_uuid = latest_responses[x]['form_by_staff_uuid']
     job_uuid = latest_responses[x]['regarding_object_uuid']
     form_responses = json.loads(latest_responses[x]['field_data'])
     time.sleep(0.1)
     updated_answers = []
-    for i in tqdm(range(len(form_responses)), desc='answer_refactoring'):
+    for i in range(len(form_responses)):
         answer = form_responses[i]
         if (answer['FieldType'] == 'Number') and (answer['Response'] != ''):
             answer['responded_at'] = responded_at
