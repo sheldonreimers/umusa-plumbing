@@ -130,7 +130,7 @@ class GoogleSheets():
         
     def sheet_to_df(self,sheet_id, tab_name, starting_cell, ending_cell = None, include_header = True):
         if ending_cell == None:
-            ending_cell = re.sub(r'[^a-zA-Z]', '', starting_cell)
+            ending_cell = self._get_last_column(sheet_id = sheet_id, tab_name = tab_name)
         else:
             pass
             
@@ -360,6 +360,14 @@ class GoogleSheets():
         )
         values = result.get('values', [])
         return len(values)
+    
+    def _get_last_column(self,sheet_id, tab_name):
+        result = self.value_service.get( spreadsheetId=sheet_id
+                                        ,range=tab_name
+                                        ,majorDimension = 'COLUMNS'
+                                       ).execute()['values']
+        last_col = self._end_col(len(result))
+        return last_col
 
 # Drive Not Built Yet:
 # ------------------------------------

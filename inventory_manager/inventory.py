@@ -33,7 +33,6 @@ following_sunday_date = previous_monday_date + timedelta(days=6)
 following_sunday_str = following_sunday_date.strftime("%Y-%m-%d")
 
 ## Retrieving staff data and filtering to active staff
-
 staff_cols = [ 'uuid'
               ,'first'
               ,'last'
