@@ -27,10 +27,16 @@ sm8 = ServiceM8(servicem8_secret)
 sa_timezone = pytz.timezone('Africa/Johannesburg')
 now_date = dt.now(sa_timezone)
 days_difference = now_date.weekday() + 7  # 0 represents Monday
+
 previous_monday_date = now_date - timedelta(days=days_difference)
 previous_monday_str = previous_monday_date.strftime("%Y-%m-%d")
+
 following_sunday_date = previous_monday_date + timedelta(days=6)
 following_sunday_str = following_sunday_date.strftime("%Y-%m-%d")
+
+previous_day_date = now_date - timedelta(days=1)
+previous_day_str = previous_day_date.strftime("%Y-%m-%d")
+now_str = now_date.strftime("%Y-%m-%d")
 
 ## Retrieving staff data and filtering to active staff
 staff_cols = [ 'uuid'
@@ -50,10 +56,13 @@ active_staff['full_name'] = active_staff['first'] + ' '+active_staff['last']
 active_staff.drop(labels = ['first','last'],axis = 1,inplace = True)
 
 ## Getting form responses & filtering for the date
-
 all_form_responses = sm8.get_form_responses(form_uuid = '317211c5-7ba8-4e87-ba03-ac6e73e3eda6')
 
-latest_responses = [d for d in all_form_responses if previous_monday_str <= d['timestamp'] <= following_sunday_str]
+for d in all_form_responses:
+    # Split the timestamp string at the space character and keep only the date part
+    d['date_str'] = d['timestamp'].split()[0]
+
+latest_responses = [d for d in all_form_responses if previous_day_str == d['date_str']]
 
 updated_responses = []
 
@@ -62,7 +71,6 @@ for x in range(len(latest_responses)):
     staff_uuid = latest_responses[x]['form_by_staff_uuid']
     job_uuid = latest_responses[x]['regarding_object_uuid']
     form_responses = json.loads(latest_responses[x]['field_data'])
-    time.sleep(0.1)
     updated_answers = []
     for i in range(len(form_responses)):
         answer = form_responses[i]
@@ -75,7 +83,6 @@ for x in range(len(latest_responses)):
             answer.pop('SortOrder')
             answer.pop('UUID')
             updated_answers.append(answer)
-            time.sleep(0.01)
     updated_responses.extend(updated_answers)
     
 updated_respnses_df = pd.DataFrame(updated_responses)
@@ -89,18 +96,44 @@ merged_df = updated_respnses_df.merge( active_staff
                                                       ,'FieldType']
                                             ,axis = 1).astype({'Response':float})
 
-agg_df = merged_df.groupby([ 'full_name'
-                            ,'Question']).sum('Response'
-                                             ).reset_index().rename(columns = {'Question':'inventory_name'})
+previous_day_agg_df = merged_df.groupby([ 'full_name'
+                                         ,'Question']).sum('Response'
+                                                          ).reset_index().rename(columns = {'Response':now_str
+                                                                              ,'Question':'inventory'})
 
-if len(agg_df) > 0:
-    gpy.create_tab( sheet_id = '1_fuV4FDD8LrLgbWrgMaq_o3Cz_d7yisSYFLWust1nOw'
-                   ,tab_name = previous_monday_str
-                  )
-    gpy.df_to_sheet( df = agg_df
+try:
+    gsheet_df = gpy.sheet_to_df( sheet_id = '1_fuV4FDD8LrLgbWrgMaq_o3Cz_d7yisSYFLWust1nOw'
+                                ,tab_name = previous_monday_str
+                                ,starting_cell = 'A1'
+                               )
+
+    complete_ref = gsheet_df[[ 'full_name'
+                              ,'inventory']].append(previous_day_agg_df[[ 'full_name'
+                                                                         ,'inventory']]
+                                                   ).drop_duplicates(ignore_index = True)
+
+
+    full_merge = complete_ref.merge( gsheet_df
+                                    ,how = 'left'
+                                    ,on = ['full_name','inventory']
+                                   ).merge( previous_day_agg_df
+                                           ,how = 'left'
+                                           ,on = ['full_name','inventory']
+                                          )
+
+    gpy.df_to_sheet( full_merge.fillna(0)
                     ,sheet_id = '1_fuV4FDD8LrLgbWrgMaq_o3Cz_d7yisSYFLWust1nOw'
                     ,tab_name = previous_monday_str
                     ,starting_cell = 'A1'
                     ,is_append = False
-                    ,include_header=True
                    )
+except Exception as e:
+    if 'Unable to parse range' in str(e):
+        gpy.df_to_sheet( previous_day_agg_df.fillna(0)
+                        ,sheet_id = '1_fuV4FDD8LrLgbWrgMaq_o3Cz_d7yisSYFLWust1nOw'
+                        ,tab_name = previous_monday_str
+                        ,starting_cell = 'A1'
+                        ,is_append = False
+                       )
+    else:
+        print(str(e))

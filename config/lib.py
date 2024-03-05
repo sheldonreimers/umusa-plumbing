@@ -167,17 +167,43 @@ class GoogleSheets():
             else:
                 return 'Invalid value given'
         if is_append == True:
-            self.df_append_sheet( df = df
-                                  ,sheet_id = sheet_id
-                                  ,tab_name = tab_name
-                                  ,starting_cell = starting_cell
-                                 )
+            try:
+                self.df_append_sheet( df = df
+                                      ,sheet_id = sheet_id
+                                      ,tab_name = tab_name
+                                      ,starting_cell = starting_cell
+                                     )
+            except Exception as e:
+                if 'Invalid dataFilter[0]' in str(e):
+                    self.create_tab( sheet_id = sheet_id
+                                    ,tab_name = tab_name
+                                   )
+                    self.df_append_sheet( df = df
+                                         ,sheet_id = sheet_id
+                                         ,tab_name = tab_name
+                                         ,starting_cell = starting_cell
+                                        )
+                else:
+                    return e
         elif is_append == False:
-            self.df_to_sheet_full(df = df
-                                   ,sheet_id = sheet_id
-                                   ,tab_name = tab_name
-                                   ,starting_cell = starting_cell
-                                   ,include_header = include_header)
+            try:
+                self.df_to_sheet_full(df = df
+                                       ,sheet_id = sheet_id
+                                       ,tab_name = tab_name
+                                       ,starting_cell = starting_cell
+                                       ,include_header = include_header)
+            except Exception as e:
+                if 'Invalid dataFilter[0]' in str(e):
+                    self.create_tab( sheet_id = sheet_id
+                                    ,tab_name = tab_name
+                                   )
+                    self.df_to_sheet_full( df = df
+                                          ,sheet_id = sheet_id
+                                          ,tab_name = tab_name
+                                          ,starting_cell = starting_cell
+                                          ,include_header = include_header)
+                else:
+                    return e
         else:
             return 'Append Value is a requirements'
     
