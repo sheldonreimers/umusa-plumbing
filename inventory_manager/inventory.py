@@ -98,7 +98,7 @@ merged_df = updated_respnses_df.merge( active_staff
 
 previous_day_agg_df = merged_df.groupby([ 'full_name'
                                          ,'Question']).sum('Response'
-                                                          ).reset_index().rename(columns = {'Response':now_str
+                                                          ).reset_index().rename(columns = {'Response':previous_day_str
                                                                               ,'Question':'inventory'})
 
 try:
