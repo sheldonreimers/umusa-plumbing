@@ -1,3 +1,9 @@
+# Committing Commands
+'''
+git add . 
+git commit -m "Update for current week naming"
+git push origin main
+'''
 # System Library Import & directories
 import os
 import sys
@@ -23,20 +29,23 @@ servicem8_secret = os.environ.get('SERVICEM8_SECRET')
 gpy = GoogleSheets(umusa_secret)
 sm8 = ServiceM8(servicem8_secret)
 
-## Setting datestamps for script for filtering to previous week
+# Setting datestamps for script for filtering to previous week
 sa_timezone = pytz.timezone('Africa/Johannesburg')
 now_date = dt.now(sa_timezone)
-days_difference = now_date.weekday() + 7  # 0 represents Monday
 
-previous_monday_date = now_date - timedelta(days=days_difference)
-previous_monday_str = previous_monday_date.strftime("%Y-%m-%d")
-
-following_sunday_date = previous_monday_date + timedelta(days=6)
-following_sunday_str = following_sunday_date.strftime("%Y-%m-%d")
-
-previous_day_date = now_date - timedelta(days=1)
-previous_day_str = previous_day_date.strftime("%Y-%m-%d")
-now_str = now_date.strftime("%Y-%m-%d")
+if now_date.weekday() == 0:  # Monday
+    week_date = now_date - timedelta(days=7)
+    tab_name_str = week_date.strftime("%Y-%m-%d")
+    previous_day_date = now_date - timedelta(days=1)
+    previous_day_str = previous_day_date.strftime("%Y-%m-%d")
+    now_str = tab_name_str
+else:
+    days_difference = now_date.weekday()
+    week_date = now_date - timedelta(days=days_difference)
+    tab_name_str = week_date.strftime("%Y-%m-%d")
+    previous_day_date = now_date - timedelta(days=1)
+    previous_day_str = previous_day_date.strftime("%Y-%m-%d")
+    now_str = now_date.strftime("%Y-%m-%d")
 
 ## Retrieving staff data and filtering to active staff
 staff_cols = [ 'uuid'
@@ -103,7 +112,7 @@ previous_day_agg_df = merged_df.groupby([ 'full_name'
 
 try:
     gsheet_df = gpy.sheet_to_df( sheet_id = '1_fuV4FDD8LrLgbWrgMaq_o3Cz_d7yisSYFLWust1nOw'
-                                ,tab_name = previous_monday_str
+                                ,tab_name = tab_name_str
                                 ,starting_cell = 'A1'
                                )
 
@@ -123,7 +132,7 @@ try:
 
     gpy.df_to_sheet( full_merge.fillna(0)
                     ,sheet_id = '1_fuV4FDD8LrLgbWrgMaq_o3Cz_d7yisSYFLWust1nOw'
-                    ,tab_name = previous_monday_str
+                    ,tab_name = tab_name_str
                     ,starting_cell = 'A1'
                     ,is_append = False
                    )
@@ -131,7 +140,7 @@ except Exception as e:
     if 'Unable to parse range' in str(e):
         gpy.df_to_sheet( previous_day_agg_df.fillna(0)
                         ,sheet_id = '1_fuV4FDD8LrLgbWrgMaq_o3Cz_d7yisSYFLWust1nOw'
-                        ,tab_name = previous_monday_str
+                        ,tab_name = tab_name_str
                         ,starting_cell = 'A1'
                         ,is_append = False
                        )
