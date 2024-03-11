@@ -73,6 +73,11 @@ for d in all_form_responses:
 
 latest_responses = [d for d in all_form_responses if previous_day_str == d['date_str']]
 
+if len(latest_responses) == 0:
+    sys.exit('No new submissions')
+else:
+    pass
+
 updated_responses = []
 
 for x in range(len(latest_responses)):
