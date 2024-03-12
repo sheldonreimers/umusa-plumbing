@@ -394,57 +394,6 @@ class GoogleSheets():
                                        ).execute()['values']
         last_col = self._end_col(len(result))
         return last_col
-
-# Drive Not Built Yet:
-# ------------------------------------
-#     def share_sheet( self
-#                     ,sheet_id :'str[required]'
-#                     ,email :'str[required]'
-#                     ,role_type :'str[optional]' = None
-#                     ,permission_type :'str[optional]' = None
-#                     ,notify:'boolean[optional]' = False
-#                    ):
-#         '''
-#         Share a Google Sheets spreadsheet with another user.
-#         Args:
-#             spreadsheet_id (str): The ID of the spreadsheet to share.
-#             email_address (str): The email address of the user to share with.
-#             role_type (str, optional): The role to assign to the user. Defaults to 'reader'.
-#                 Available role options:
-#                     - `owner`: The owner has full control over the spreadsheet.
-#                     - `writer`: Writers have the ability to make changes to the spreadsheet.
-#                     - `commenter`: Commenters can view the spreadsheet and add comments.
-#                     - `reader`: Readers have read-only access to the spreadsheet.
-#             permission_type (str, optional): The type of permission. Defaults to 'user'.
-#                 Available types:
-#                     - 'user': Share with an individual user identified by their email address.
-#                     - 'group': Share with a Google Group identified by its email address.
-#                     - 'domain': Share with all users within a Google Workspace domain.
-#                     - 'anyone': Share with anyone with the link.
-
-#         Returns:
-#             dict: The permission details for the shared spreadsheet.
-#         '''
-#         payload = { 'type':permission_type
-#                    ,'role':role_type
-#                    ,'emailAddress':email
-#                   }
-        
-#         response = self._drive.permissions().create( fileId = sheet_id
-#                                                     ,body = payload
-#                                                     ,sendNotificationEmail = notify
-#                                                    ).execute()
-#         if response['role'] != role_type:
-#             payload = {
-#                        'role':role_type
-#                       }
-#             updated_response = self._drive.permissions().update( fileId = sheet_id
-#                                                                ,permissionId = response['id']
-#                                                                ,body = payload
-#                                                               ).execute()
-#             return updated_response
-#         else:
-#             return response
     
     def delete_row(self
                    ,sheet_id
@@ -495,3 +444,90 @@ class GoogleSheets():
                                     ).execute()
         except Exception as e:
             return str(e)
+
+class OneDrive():
+    
+    def __init__(self,secret_dict):
+        # init Variables
+        scope = 'https://graph.microsoft.com/.default'
+        token_endpoint = 'https://login.microsoftonline.com/common/oauth2/v2.0/token'
+        tenant_id = secret_dict['tenant_id']
+        client_id = secret_dict['client_id']
+        client_secret = secret_dict['client_secret']
+        redirect_uri = secret_dict['redirect_uri']
+        auth_code = secret_dict['auth_code']
+        refresh_token = secret_dict['refresh_token']
+        
+        # Dict Creations
+        token_data = { 'client_id': client_id
+                           ,'client_secret': client_secret
+                           ,'refresh_token': refresh_token
+                           ,'grant_type': 'refresh_token'
+                          }
+        
+        # POST for Access Tokens
+        response = requests.post(token_endpoint, data=token_data)
+        self.refresh_token = response.json()['refresh_token']
+        self.access_token = response.json()['access_token']
+        
+        #System Variables
+        self.headers = {'Authorization': f'Bearer {self.access_token}'
+                        ,'Content-Type': 'application/json'
+                       }
+        self.base_url = 'https://graph.microsoft.com/v1.0/me/drive'
+        # print(self.access_token)
+        
+    def get_folders(self):
+        endpoint = '/root/children'
+        response = requests.get(self.base_url+endpoint, headers=self.headers)
+        return response
+    
+    def get_items_by_folder_id(self,folder_id):
+        endpoint = f'/items/{folder_id}/children'
+        response = requests.get(self.base_url+endpoint, headers=self.headers)
+        return response
+    
+    def create_folder(self,parent_folder_id, folder_name):
+        endpoint = f'/items/{parent_folder_id}/children'
+        payload = { 'name': folder_name
+                   ,'folder': {}
+                   ,'@microsoft.graph.conflictBehavior': 'rename'
+                  }
+        response = requests.post( self.base_url+endpoint
+                                ,headers=self.headers
+                                ,json = payload
+                                )
+        if response.status_code == 201:
+            response_json = response.json()
+            return response_json['name'],response_json['id']
+        else:
+            return response
+        
+    def delete_folder(self,folder_id):
+        endpoint = f'/items/{folder_id}'
+        response = requests.delete( self.base_url+endpoint
+                                ,headers=self.headers)
+        if response.status_code == 204:
+            
+            return 'file deleted'
+        else:
+            return response
+        
+    def upload_file(self,parent_id,file_name,file_path=None,file_content=None):
+        self.headers['Content-Type'] = 'application/octet-stream'
+        if file_path != None and file_content == None:
+            endpoint = f'/items/{parent_id}:/{file_path.split("/")[-1]}:/content'
+            with open(file_path, 'rb') as file:
+                file_content = file.read()
+            response = requests.put( self.base_url+endpoint
+                                    ,headers = self.headers
+                                    ,data = file_content
+                                   )
+            return response
+        elif file_path == None and file_content != None:
+            endpoint = f'/items/{parent_id}:/{file_name}:/content'
+            response = requests.put( self.base_url+endpoint
+                                    ,headers = self.headers
+                                    ,data = file_content
+                                   )
+            return response
