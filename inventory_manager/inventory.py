@@ -1,5 +1,6 @@
 # Committing Commands
 '''
+cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/inventory_manager
 git add . 
 git commit -m "Adding in OneDrive library"
 git push origin main
