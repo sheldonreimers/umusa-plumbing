@@ -1,7 +1,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/config
 git add . 
-git commit -m "Updating requirements"
+git commit -m "Updating GSheet Lib"
 git push origin main
 '''
 # General Libraries
@@ -168,8 +168,8 @@ class ServiceM8():
                 
 
 class GoogleSheets():
-    def __init__(self,secret_path):
-        creds = service_account.Credentials.from_service_account_file(secret_path)
+    def __init__(self,secret):
+        creds = service_account.Credentials.from_service_account_info(secret)
         self.service = build('sheets', 'v4', credentials=creds).spreadsheets()
         
         self.value_service = self.service.values()
