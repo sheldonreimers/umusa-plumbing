@@ -45,7 +45,7 @@ dated_attachments = sm8.get_attachments_by_date(now_date)
 
 unique_values = {item['related_object_uuid'] for item in dated_attachments}
 
-for x in tqdm(unique_values):
+for x in unique_values:
     job_data = sm8.get_job_by_uuid(x)
     company_uuid = job_data['company_uuid']
     generated_job_id = job_data['generated_job_id']
@@ -68,7 +68,7 @@ for x in tqdm(unique_values):
     for attachment in dated_attachments:
         if attachment.get('related_object_uuid') == x:
             attachment_data.append(attachment)
-    for y in tqdm(attachment_data):
+    for y in attachment_data:
         attachment_uuid = y['uuid']
         file_type = y['attachment_source']
         file_ext = y['file_type']
