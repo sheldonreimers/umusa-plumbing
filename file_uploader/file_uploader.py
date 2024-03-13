@@ -26,12 +26,12 @@ from lib import OneDrive
 # Access the secrets from environment variables
 umusa_secret = json.loads(os.environ.get('UMUSA_SECRET'))
 servicem8_secret = os.environ.get('SERVICEM8_SECRET')
-umusa_secret = json.loads(os.environ.get('UMUSA_AZURE'))
+umusa_azure = json.loads(os.environ.get('UMUSA_AZURE'))
 
 ## Activating API Systems
 gpy = GoogleSheets(umusa_secret)
 sm8 = ServiceM8(servicem8_secret)
-od = OneDrive(umusa_secret)
+od = OneDrive(umusa_azure)
 
 # Script Variables
 servicem8_attachments_folder = '4B4564E48AE9C501!523357'
