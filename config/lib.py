@@ -17,6 +17,7 @@ import numpy as np
 from requests.auth import HTTPBasicAuth
 from PIL import Image as PILImage
 from io import BytesIO
+from PIL import Image as PILImage
 import fitz  # PyMuPDF
 from IPython.display import display, Image
 import cv2
