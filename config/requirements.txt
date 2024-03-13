@@ -42,3 +42,6 @@ PyMuPDF==1.23.26
 
 # opencv-python - OpenCV library for computer vision tasks.
 opencv-python==4.9.0.80
+
+# IPython - Interactive computing in Python.
+ipython==8.15.0
