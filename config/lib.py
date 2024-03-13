@@ -1,7 +1,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/config
 git add . 
-git commit -m "Updating ServiceM8 and OneDrive calls"
+git commit -m "Updating requirements"
 git push origin main
 '''
 # General Libraries

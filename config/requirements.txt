@@ -41,4 +41,4 @@ Pillow==10.2.0
 PyMuPDF==1.23.26
 
 # opencv-python - OpenCV library for computer vision tasks.
-opencv-python==4.9.0
+opencv-python==4.9.0.80
