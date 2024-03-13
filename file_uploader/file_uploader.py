@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/file_uploader
 git add . 
-git commit -m "Adding V1 Script"
+git commit -m "Updating secret"
 git push origin main
 '''
 # System Library Import & directories
