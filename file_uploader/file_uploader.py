@@ -41,7 +41,7 @@ all_jobs = sm8.all_jobs_date( search_date = '2024-03-12'
                              ,search_operator = 'eq'
                             )
 
-for x in tqdm(all_jobs):
+for x in all_jobs:
     job_uuid = x['uuid']
     company_uuid = x['company_uuid']
     generated_job_id = x['generated_job_id']
@@ -53,7 +53,7 @@ for x in tqdm(all_jobs):
     new_folder_id = created_folder[1]
     attachment_data = sm8.get_attachments_by_job(job_uuid)
     file_name_no = 1
-    for y in tqdm(attachment_data):
+    for y in attachment_data:
         attachment_uuid = y['uuid']
         file_type = y['attachment_source']
         file_ext = y['file_type']
