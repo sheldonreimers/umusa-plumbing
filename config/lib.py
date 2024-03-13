@@ -1,10 +1,9 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/config
 git add . 
-git commit -m "Adding in OneDrive library"
+git commit -m "Updating ServiceM8 and OneDrive calls"
 git push origin main
 '''
-
 # General Libraries
 import csv, io, os, sys, re
 import requests
@@ -12,9 +11,15 @@ import json
 import pandas as pd
 import datetime as dt
 from datetime import datetime, timezone, timedelta
+from io import StringIO
 from retry import retry
 import numpy as np
 from requests.auth import HTTPBasicAuth
+from PIL import Image as PILImage
+from io import BytesIO
+import fitz  # PyMuPDF
+from IPython.display import display, Image
+import cv2
 
 # Google Libraries
 from apiclient.http import MediaIoBaseDownload
@@ -25,10 +30,10 @@ from google.oauth2 import service_account
 
 class ServiceM8():
 
-    def __init__(self,key):
+    def __init__(self):
         self.base_url = 'https://api.servicem8.com/api_1.0'
         self.headers = headers = { 'accept': 'application/json'
-                                  ,'authorization': f'Basic {key}'
+                                  ,'authorization': 'Basic aW5mb0B1bXVzYXByb2plY3RzLmNvLnphOmRmN2U0MjcwLTMyYTQtNDk4OS04NmJiLTIwNTU5NWNmNzAzYg=='
           }
 
     def all_jobs_date(self,search_date, search_operator):
@@ -93,33 +98,77 @@ class ServiceM8():
         endpoint = f'/job/{job_uuid}.json'
         response = requests.get(url = self.base_url + endpoint, headers = self.headers).json()
         return response
-
-    def get_all_staff(self):
-        endpoint = '/staff.json'
-        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
-        try:
-            response_json = response.json()
-            return response_json
-        except Exception as e:
-            return str(e)
-
-    def get_staff_by_uuid(self,staff_uuid):
-        endpoint = f'/staff/{staff_uuid}.json'
-        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
-        return response
-    
-    def get_form_responses(self, form_uuid):
-        endpoint = f"/formresponse.json?%24filter=form_uuid%20eq%20'{form_uuid}'"
-        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
-        try:
-            return response.json()
-        except Exception as e:
-            return str(e)
         
+    def get_attachments_by_job(self,job_uuid):
+        endpoint = f'/attachment.json?%24filter=related_object_uuid%20eq%20{job_uuid}'
+        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
+        response_json = response.json()
+        return response_json
+    
+    def get_image(self,asset_uuid, file_type, file_path = None, return_type = None):
+        ''' return_type: image - Shows the image
+                         content - Returns the content of the file
+            file_type:   image - Download image files (JPEG)
+                         pdf - Download PDF files
+                         video - Download a video file
+        '''
+        endpoint = f'/attachment/{asset_uuid}.file'
+        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
+        try:
+            response_url = response.url
+            image_response = requests.get(response_url).content
+            if file_type == 'image':
+                if file_path != None:
+                    with open(file_path,'wb') as f:
+                        f.write(image_response)
+                elif file_path == None:
+                    if return_type == 'image':
+                        return PILImage.open(BytesIO(image_response))
+                    elif return_type == 'content':
+                        return image_response
+                else:
+                    print('Not all variables supplied')
+            elif file_type == 'pdf':
+                fitz_response = fitz.open(stream=image_response, filetype="pdf")
+                if file_path != None:
+                    output_pdf = fitz.open()
+                    for page_number in range(len(fitz_response)):
+                        # Render the page as an image
+                        page = fitz_response.load_page(page_number)
+                        pix = page.get_pixmap()
+                        output_pdf.insert_page(page_number, width=pix.width, height=pix.height)
+                        output_pdf[page_number].insert_image((0, 0, pix.width, pix.height), pixmap=pix)
+                    output_pdf.save(file_path)
+                elif file_path == None and return_type == 'content':
+                    return image_response
+                elif file_path == None and return_type == 'image':
+                    for page_number in range(len(fitz_response)):
+                        # Render the page as an image
+                        page = fitz_response.load_page(page_number)
+                        pix = page.get_pixmap()
+                        img_bytes = pix.tobytes()
+                        display(Image(data=img_bytes))
+            elif file_type == 'video':
+                if file_path != None:
+                    with open(file_path,'wb') as f:
+                        f.write(image_response)
+                elif return_type =='content':
+                    return image_response
+                else:
+                    print('Missing fields')
+        except Exception as e:
+            return e
+
+    def get_customer_details(self,customer_uuid):
+        endpoint = f'/company/{customer_uuid}.json'
+        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
+        response_json = response.json()
+        return response_json
+                
 
 class GoogleSheets():
-    def __init__(self,service_secret):
-        creds = service_account.Credentials.from_service_account_info(service_secret)
+    def __init__(self,secret_path):
+        creds = service_account.Credentials.from_service_account_file(secret_path)
         self.service = build('sheets', 'v4', credentials=creds).spreadsheets()
         
         self.value_service = self.service.values()
@@ -137,7 +186,7 @@ class GoogleSheets():
         
     def sheet_to_df(self,sheet_id, tab_name, starting_cell, ending_cell = None, include_header = True):
         if ending_cell == None:
-            ending_cell = self._get_last_column(sheet_id = sheet_id, tab_name = tab_name)
+            ending_cell = re.sub(r'[^a-zA-Z]', '', starting_cell)
         else:
             pass
             
@@ -174,43 +223,17 @@ class GoogleSheets():
             else:
                 return 'Invalid value given'
         if is_append == True:
-            try:
-                self.df_append_sheet( df = df
-                                      ,sheet_id = sheet_id
-                                      ,tab_name = tab_name
-                                      ,starting_cell = starting_cell
-                                     )
-            except Exception as e:
-                if 'Invalid dataFilter[0]' in str(e):
-                    self.create_tab( sheet_id = sheet_id
-                                    ,tab_name = tab_name
-                                   )
-                    self.df_append_sheet( df = df
-                                         ,sheet_id = sheet_id
-                                         ,tab_name = tab_name
-                                         ,starting_cell = starting_cell
-                                        )
-                else:
-                    return e
+            self.df_append_sheet( df = df
+                                  ,sheet_id = sheet_id
+                                  ,tab_name = tab_name
+                                  ,starting_cell = starting_cell
+                                 )
         elif is_append == False:
-            try:
-                self.df_to_sheet_full(df = df
-                                       ,sheet_id = sheet_id
-                                       ,tab_name = tab_name
-                                       ,starting_cell = starting_cell
-                                       ,include_header = include_header)
-            except Exception as e:
-                if 'Invalid dataFilter[0]' in str(e):
-                    self.create_tab( sheet_id = sheet_id
-                                    ,tab_name = tab_name
-                                   )
-                    self.df_to_sheet_full( df = df
-                                          ,sheet_id = sheet_id
-                                          ,tab_name = tab_name
-                                          ,starting_cell = starting_cell
-                                          ,include_header = include_header)
-                else:
-                    return e
+            self.df_to_sheet_full(df = df
+                                   ,sheet_id = sheet_id
+                                   ,tab_name = tab_name
+                                   ,starting_cell = starting_cell
+                                   ,include_header = include_header)
         else:
             return 'Append Value is a requirements'
     
@@ -393,14 +416,57 @@ class GoogleSheets():
         )
         values = result.get('values', [])
         return len(values)
-    
-    def _get_last_column(self,sheet_id, tab_name):
-        result = self.value_service.get( spreadsheetId=sheet_id
-                                        ,range=tab_name
-                                        ,majorDimension = 'COLUMNS'
-                                       ).execute()['values']
-        last_col = self._end_col(len(result))
-        return last_col
+
+# Drive Not Built Yet:
+# ------------------------------------
+#     def share_sheet( self
+#                     ,sheet_id :'str[required]'
+#                     ,email :'str[required]'
+#                     ,role_type :'str[optional]' = None
+#                     ,permission_type :'str[optional]' = None
+#                     ,notify:'boolean[optional]' = False
+#                    ):
+#         '''
+#         Share a Google Sheets spreadsheet with another user.
+#         Args:
+#             spreadsheet_id (str): The ID of the spreadsheet to share.
+#             email_address (str): The email address of the user to share with.
+#             role_type (str, optional): The role to assign to the user. Defaults to 'reader'.
+#                 Available role options:
+#                     - `owner`: The owner has full control over the spreadsheet.
+#                     - `writer`: Writers have the ability to make changes to the spreadsheet.
+#                     - `commenter`: Commenters can view the spreadsheet and add comments.
+#                     - `reader`: Readers have read-only access to the spreadsheet.
+#             permission_type (str, optional): The type of permission. Defaults to 'user'.
+#                 Available types:
+#                     - 'user': Share with an individual user identified by their email address.
+#                     - 'group': Share with a Google Group identified by its email address.
+#                     - 'domain': Share with all users within a Google Workspace domain.
+#                     - 'anyone': Share with anyone with the link.
+
+#         Returns:
+#             dict: The permission details for the shared spreadsheet.
+#         '''
+#         payload = { 'type':permission_type
+#                    ,'role':role_type
+#                    ,'emailAddress':email
+#                   }
+        
+#         response = self._drive.permissions().create( fileId = sheet_id
+#                                                     ,body = payload
+#                                                     ,sendNotificationEmail = notify
+#                                                    ).execute()
+#         if response['role'] != role_type:
+#             payload = {
+#                        'role':role_type
+#                       }
+#             updated_response = self._drive.permissions().update( fileId = sheet_id
+#                                                                ,permissionId = response['id']
+#                                                                ,body = payload
+#                                                               ).execute()
+#             return updated_response
+#         else:
+#             return response
     
     def delete_row(self
                    ,sheet_id
@@ -494,6 +560,7 @@ class OneDrive():
         response = requests.get(self.base_url+endpoint, headers=self.headers)
         return response
     
+    @retry(tries=2,delay = 5)
     def create_folder(self,parent_folder_id, folder_name):
         endpoint = f'/items/{parent_folder_id}/children'
         payload = { 'name': folder_name
@@ -521,20 +588,21 @@ class OneDrive():
             return response
         
     def upload_file(self,parent_id,file_name,file_path=None,file_content=None):
-        self.headers['Content-Type'] = 'application/octet-stream'
+        upload_headers = self.headers.copy()
+        upload_headers['Content-Type'] = 'application/octet-stream'
         if file_path != None and file_content == None:
             endpoint = f'/items/{parent_id}:/{file_path.split("/")[-1]}:/content'
             with open(file_path, 'rb') as file:
                 file_content = file.read()
             response = requests.put( self.base_url+endpoint
-                                    ,headers = self.headers
+                                    ,headers = upload_headers
                                     ,data = file_content
                                    )
             return response
         elif file_path == None and file_content != None:
             endpoint = f'/items/{parent_id}:/{file_name}:/content'
             response = requests.put( self.base_url+endpoint
-                                    ,headers = self.headers
+                                    ,headers = upload_headers
                                     ,data = file_content
                                    )
             return response
