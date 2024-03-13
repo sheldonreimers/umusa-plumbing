@@ -57,6 +57,6 @@ jobs:
             ${{ runner.os }}-pip-
 
       # Runs a single command using the runners shell
-      - name: Inventory Manager
+      - name: File Uploader
         run: python file_uploader/file_uploader.py
         
