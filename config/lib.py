@@ -1,7 +1,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/config
 git add . 
-git commit -m "Updating GSheet Lib"
+git commit -m "Updating ServiceM8 init"
 git push origin main
 '''
 # General Libraries
@@ -31,11 +31,12 @@ from google.oauth2 import service_account
 
 class ServiceM8():
 
-    def __init__(self):
+    def __init__(self,key):
         self.base_url = 'https://api.servicem8.com/api_1.0'
         self.headers = headers = { 'accept': 'application/json'
-                                  ,'authorization': 'Basic aW5mb0B1bXVzYXByb2plY3RzLmNvLnphOmRmN2U0MjcwLTMyYTQtNDk4OS04NmJiLTIwNTU5NWNmNzAzYg=='
+                                  ,'authorization': f'Basic {key}'
           }
+
 
     def all_jobs_date(self,search_date, search_operator):
         '''Usable operators: 
