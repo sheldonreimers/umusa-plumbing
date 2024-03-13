@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/file_uploader
 git add . 
-git commit -m "Updating secret"
+git commit -m "Removing TQDM"
 git push origin main
 '''
 # System Library Import & directories
@@ -35,55 +35,73 @@ od = OneDrive(umusa_azure)
 
 # Script Variables
 servicem8_attachments_folder = '4B4564E48AE9C501!523357'
+sa_timezone = pytz.timezone('Africa/Johannesburg')
+now_date = dt.now(sa_timezone).strftime("%Y-%m-%d")
 
-# Retrieves all jobs done that day
-all_jobs = sm8.all_jobs_date( search_date = '2024-03-12'
-                             ,search_operator = 'eq'
-                            )
+# Retrieving all creeated folders
+folder_data = od.get_items_by_folder_id(servicem8_attachments_folder).json()['value']
 
-for x in all_jobs:
-    job_uuid = x['uuid']
-    company_uuid = x['company_uuid']
-    generated_job_id = x['generated_job_id']
+dated_attachments = sm8.get_attachments_by_date(now_date)
+
+unique_values = {item['related_object_uuid'] for item in dated_attachments}
+
+for x in tqdm(unique_values):
+    job_data = sm8.get_job_by_uuid(x)
+    company_uuid = job_data['company_uuid']
+    generated_job_id = job_data['generated_job_id']
     customer_name = sm8.get_customer_details(company_uuid)['name']
     folder_name = '#'+generated_job_id+'; '+customer_name.replace(',',';')
-    created_folder = od.create_folder( parent_folder_id = servicem8_attachments_folder
-                                      ,folder_name = folder_name
-                                     )
-    new_folder_id = created_folder[1]
-    attachment_data = sm8.get_attachments_by_job(job_uuid)
-    file_name_no = 1
-    for y in attachment_data:
+    if any(folder_name == item.get('name') for item in folder_data):
+        for item in folder_data:
+            if item.get('name') == folder_name:
+                folder_id = item['id']
+        existing_files = od.get_items_by_folder_id(folder_id).json()['value']
+        existing_file_no = max([int(files['name'].split('_')[-1].split('.')[0]) for files in existing_files])
+        file_name_no = existing_file_no+1
+    else:
+        created_folder = od.create_folder( parent_folder_id = servicem8_attachments_folder
+                                          ,folder_name = folder_name
+                                         )
+        folder_id = created_folder[1]
+        file_name_no = 1
+    attachment_data = []
+    for attachment in dated_attachments:
+        if attachment.get('related_object_uuid') == x:
+            attachment_data.append(attachment)
+    for y in tqdm(attachment_data):
         attachment_uuid = y['uuid']
         file_type = y['attachment_source']
         file_ext = y['file_type']
-        file_name = y['attachment_name']+'_'+str(file_name_no)+file_ext
-        if file_type.lower() == 'photo':
-            photo_data = sm8.get_image( asset_uuid = attachment_uuid
-                                       ,file_type = 'image'
-                                       ,return_type = 'content'
-                                      )
-            od.upload_file( parent_id = new_folder_id
-                           ,file_name = file_name
-                           ,file_content = photo_data
-                          )
-        elif file_type.lower() == 'video':
-            video_data = sm8.get_image( asset_uuid = attachment_uuid
-                                       ,file_type = 'video'
-                                       ,return_type = 'content'
-                                      )
-            od.upload_file( parent_id = new_folder_id
-                           ,file_name = file_name
-                           ,file_content = video_data
-                          )
-        elif file_type.lower() == 'form':
+        filename = y['attachment_name']
+        if filename.endswith(file_ext):
+            filename = y['attachment_name'].replace(file_ext,'')
+        file_name = filename+'_'+str(file_name_no)+file_ext
+        if file_ext == '.pdf':
             form_data = sm8.get_image( asset_uuid = attachment_uuid
                                        ,file_type = 'pdf'
                                        ,return_type = 'content'
                                       )
             file_name = y['attachment_name'].split(' by ')[0]+'_'+str(file_name_no)+file_ext
-            od.upload_file( parent_id = new_folder_id
+            od.upload_file( parent_id = folder_id
                            ,file_name = file_name
                            ,file_content = form_data
+                          )
+        elif file_ext == '.mp4':
+            video_data = sm8.get_image( asset_uuid = attachment_uuid
+                                       ,file_type = 'video'
+                                       ,return_type = 'content'
+                                      )
+            od.upload_file( parent_id = folder_id
+                           ,file_name = file_name
+                           ,file_content = video_data
+                          )
+        else:
+            photo_data = sm8.get_image( asset_uuid = attachment_uuid
+                                       ,file_type = 'image'
+                                       ,return_type = 'content'
+                                      )
+            od.upload_file( parent_id = folder_id
+                           ,file_name = file_name
+                           ,file_content = photo_data
                           )
         file_name_no += 1

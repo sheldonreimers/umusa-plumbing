@@ -107,6 +107,18 @@ class ServiceM8():
         response_json = response.json()
         return response_json
     
+    def get_attachments_by_date(self,search_date,related_object = 'job'):
+        endpoint = f"/attachment.json?%24filter=edit_date%20gt%20'{search_date}'"
+        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
+        response_json = response.json()
+        search_date_dt = datetime.strptime(search_date, "%Y-%m-%d")
+        filtered_json = []
+        for item in response_json:
+            edit_date = datetime.fromisoformat(item['edit_date'])
+            if edit_date.date() == search_date_dt.date() and item.get('related_object') == related_object:
+                filtered_json.append(item)
+        return filtered_json
+    
     def get_image(self,asset_uuid, file_type, file_path = None, return_type = None):
         ''' return_type: image - Shows the image
                          content - Returns the content of the file
@@ -166,6 +178,18 @@ class ServiceM8():
         response = requests.get(url = self.base_url + endpoint, headers = self.headers)
         response_json = response.json()
         return response_json
+    
+    def get_attachments_by_date(self,search_date,related_object = 'job'):
+        endpoint = f"/attachment.json?%24filter=edit_date%20gt%20'{search_date}'"
+        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
+        response_json = response.json()
+        search_date_dt = datetime.strptime(search_date, "%Y-%m-%d")
+        filtered_json = []
+        for item in response_json:
+            edit_date = datetime.fromisoformat(item['edit_date'])
+            if edit_date.date() == search_date_dt.date() and item.get('related_object') == related_object:
+                filtered_json.append(item)
+        return filtered_json
                 
 
 class GoogleSheets():
