@@ -190,6 +190,28 @@ class ServiceM8():
             if edit_date.date() == search_date_dt.date() and item.get('related_object') == related_object:
                 filtered_json.append(item)
         return filtered_json
+    
+    def get_all_staff(self):
+        endpoint = '/staff.json'
+        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
+        try:
+            response_json = response.json()
+            return response_json
+        except Exception as e:
+            return str(e)
+
+    def get_staff_by_uuid(self,staff_uuid):
+        endpoint = f'/staff/{staff_uuid}.json'
+        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
+        return response
+    
+    def get_form_responses(self, form_uuid):
+        endpoint = f"/formresponse.json?%24filter=form_uuid%20eq%20'{form_uuid}'"
+        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
+        try:
+            return response.json()
+        except Exception as e:
+            return str(e)
                 
 
 class GoogleSheets():
