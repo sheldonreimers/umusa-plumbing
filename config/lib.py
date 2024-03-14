@@ -1,7 +1,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/config
 git add . 
-git commit -m "Re-adding class call"
+git commit -m "Updating _headers"
 git push origin main
 '''
 # General Libraries
@@ -33,7 +33,7 @@ class ServiceM8():
 
     def __init__(self,key):
         self._base_url = 'https://api.servicem8.com/api_1.0'
-        self.headers = headers = { 'accept': 'application/json'
+        self._headers = headers = { 'accept': 'application/json'
                                   ,'authorization': f'Basic {key}'
           }
     def all_jobs_date(self,search_date, search_operator):
@@ -51,12 +51,12 @@ class ServiceM8():
             except:
                 print('unable to convert to string')
         endpoint = f"/job.json?%24filter=date%20{search_operator}%20'{search_date}'"
-        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self._headers)
         return response.json()
 
     def get_job_activity(self,job_uuid):
         endpoint = f'/jobactivity.json?%24filter=job_uuid%20eq%20{job_uuid}'
-        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self._headers)
         return response.json()
 
     def job_activity_dated(self,search_date, search_operator):
@@ -82,7 +82,7 @@ class ServiceM8():
             except:
                 print('unable to convert to string')
         endpoint = f"/jobmaterial.json?%24filter=edit_date%20{search_operator}%20'{search_date}'"
-        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self._headers)
         try:
             return response.json()
         except: 
@@ -90,25 +90,25 @@ class ServiceM8():
 
     def active_materials(self):
         endpoint = '/material.json'
-        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self._headers)
         response_json = response.json()
         active_materials = [item for item in response_json if item.get('active') == 1]
         return active_materials
 
     def get_job_by_uuid(self,job_uuid):
         endpoint = f'/job/{job_uuid}.json'
-        response = requests.get(url = self._base_url + endpoint, headers = self.headers).json()
+        response = requests.get(url = self._base_url + endpoint, headers = self._headers).json()
         return response
         
     def get_attachments_by_job(self,job_uuid):
         endpoint = f'/attachment.json?%24filter=related_object_uuid%20eq%20{job_uuid}'
-        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self._headers)
         response_json = response.json()
         return response_json
     
     def get_attachments_by_date(self,search_date,related_object = 'job'):
         endpoint = f"/attachment.json?%24filter=edit_date%20gt%20'{search_date}'"
-        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self._headers)
         response_json = response.json()
         search_date_dt = datetime.strptime(search_date, "%Y-%m-%d")
         filtered_json = []
@@ -126,7 +126,7 @@ class ServiceM8():
                          video - Download a video file
         '''
         endpoint = f'/attachment/{asset_uuid}.file'
-        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self._headers)
         try:
             response_url = response.url
             image_response = requests.get(response_url).content
@@ -174,13 +174,13 @@ class ServiceM8():
 
     def get_customer_details(self,customer_uuid):
         endpoint = f'/company/{customer_uuid}.json'
-        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self._headers)
         response_json = response.json()
         return response_json
     
     def get_attachments_by_date(self,search_date,related_object = 'job'):
         endpoint = f"/attachment.json?%24filter=edit_date%20gt%20'{search_date}'"
-        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self._headers)
         response_json = response.json()
         search_date_dt = datetime.strptime(search_date, "%Y-%m-%d")
         filtered_json = []
@@ -192,7 +192,7 @@ class ServiceM8():
     
     def get_all_staff(self):
         endpoint = '/staff.json'
-        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self._headers)
         try:
             response_json = response.json()
             return response_json
@@ -201,7 +201,7 @@ class ServiceM8():
 
     def get_staff_by_uuid(self,staff_uuid):
         endpoint = f'/staff/{staff_uuid}.json'
-        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self._headers)
         return response
     
     def _get_form_responses(self, form_uuid):
