@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/file_uploader
 git add . 
-git commit -m "Adding Print Function"
+git commit -m "Correcting print path"
 git push origin main
 '''
 # System Library Import & directories
@@ -52,7 +52,7 @@ if len(dated_attachments) == 0:
     last_upload = {'last_upload':now_date.strftime("%Y-%m-%d %T")}
     with open(lrj_path, 'w') as json_file:
             json.dump(last_upload, json_file)
-    print('lrj_path ','updated on exit')
+    print(lrj_path,'updated on exit')
     sys.exit('No new attachtments')    
 
 sorted_attachments = sorted(dated_attachments, key=lambda x: x.get('edit_date', ''))
@@ -128,4 +128,4 @@ for x in unique_values:
 
 with open(lrj_path, 'w') as json_file:
         json.dump(last_upload, json_file)
-print('lrj_path ','updated after completed run')
+print(lrj_path,'updated after completed run')
