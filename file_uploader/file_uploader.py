@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/file_uploader
 git add . 
-git commit -m "Adding in a skip not applicable"
+git commit -m "Correcting File Path"
 git push origin main
 '''
 # System Library Import & directories
@@ -125,5 +125,5 @@ for x in unique_values:
         file_name_no += 1
         last_upload = {'last_upload':y['edit_date']}
 
-with open(rj_path, 'w') as json_file:
+with open(lrj_path, 'w') as json_file:
         json.dump(last_upload, json_file)
