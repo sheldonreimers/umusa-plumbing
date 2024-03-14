@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/inventory_manager
 git add . 
-git commit -m "Fixing First Line"
+git commit -m "Adding in file input"
 git push origin main
 '''
 # System Library Import & directories
@@ -144,6 +144,12 @@ if tab_lookup:
                                  ).drop(labels = col_name+'_cur'
                                         ,axis = 1
                                        )
+    gpy.df_to_sheet( df = final_df
+                    ,sheet_id = primary_sheet_id
+                    ,tab_name = tab_name
+                    ,starting_cell = 'A1'
+                    ,is_append = False
+                   )
 else:
     gpy.create_tab( sheet_id = primary_sheet_id
                    ,tab_name = tab_name
