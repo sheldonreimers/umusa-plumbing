@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/file_uploader
 git add . 
-git commit -m "Updating to script V2"
+git commit -m "Adding in a skip not applicable"
 git push origin main
 '''
 # System Library Import & directories
@@ -62,6 +62,8 @@ for x in unique_values:
     job_data = sm8.get_job_by_uuid(x)
     company_uuid = job_data['company_uuid']
     generated_job_id = job_data['generated_job_id']
+    if generated_job_id[-2].isalpha():
+        continue
     customer_name = sm8.get_customer_details(company_uuid)['name']
     folder_name = '#'+generated_job_id+'; '+customer_name.replace(',',';')
     if any(folder_name == item.get('name') for item in folder_data):
