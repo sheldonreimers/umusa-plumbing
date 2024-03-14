@@ -36,8 +36,8 @@ od = OneDrive(umusa_azure)
 # Script Variables
 servicem8_attachments_folder = '4B4564E48AE9C501!523357'
 sa_timezone = pytz.timezone('Africa/Johannesburg')
-now_date = dt.now(sa_timezone).strftime("%Y-%m-%d")
-review_date = now_date - timedelta(days=1)
+now_date = dt.now(sa_timezone)#.strftime("%Y-%m-%d")
+review_date = (now_date - timedelta(days=1)).strftime("%Y-%m-%d")
 
 # Retrieving all creeated folders
 folder_data = od.get_items_by_folder_id(servicem8_attachments_folder).json()['value']
