@@ -1,8 +1,8 @@
-`# Committing Commands
+# Committing Commands
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/inventory_manager
 git add . 
-git commit -m "Adding V2 File"
+git commit -m "Fixing First Line"
 git push origin main
 '''
 # System Library Import & directories
