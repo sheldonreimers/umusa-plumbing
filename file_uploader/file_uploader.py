@@ -86,7 +86,7 @@ for x in unique_values:
     for attachment in sorted_attachments:
         if attachment.get('related_object_uuid') == x:
             attachment_data.append(attachment)
-    for y in (attachment_data:
+    for y in attachment_data:
         attachment_uuid = y['uuid']
         file_type = y['attachment_source']
         file_ext = y['file_type']
