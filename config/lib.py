@@ -117,6 +117,18 @@ class ServiceM8():
             if edit_date.date() == search_date_dt.date() and item.get('related_object') == related_object:
                 filtered_json.append(item)
         return filtered_json
+
+    def get_attachments_gt_datetime(self, search_datetime, related_object='job'):
+        endpoint = f"/attachment.json?%24filter=edit_date%20gt%20'{search_datetime}'"
+        response = requests.get(url=self._base_url + endpoint, headers=self._headers)
+        response_json = response.json()
+        search_datetime_dt = datetime.strptime(search_datetime, "%Y-%m-%d %H:%M:%S")
+        filtered_json = []
+        for item in response_json:
+            edit_datetime = datetime.fromisoformat(item['edit_date'])
+            if edit_datetime > search_datetime_dt and item.get('related_object') == related_object:
+                filtered_json.append(item)
+        return filtered_json
     
     def get_image(self,asset_uuid, file_type, file_path = None, return_type = None):
         ''' return_type: image - Shows the image
@@ -255,6 +267,31 @@ class ServiceM8():
                     answers_edited.append(x)
                 restructed_form.append(answers_edited)
         return restructed_form
+
+    def get_form_responses_gt_datetime(self, form_uuid, response_datetime):
+        responses = self._get_form_responses(form_uuid)
+        restructured_form = []
+        if isinstance(response_datetime, str):
+            ref_datetime = datetime.strptime(response_datetime, "%Y-%m-%d %H:%M:%S")
+        else:
+            ref_datetime = response_datetime
+        for item in responses:
+            edit_datetime = datetime.fromisoformat(item['edit_date'])
+            if edit_datetime > ref_datetime:
+                edit_date = item['edit_date']
+                related_object = item['regarding_object']
+                related_object_uuid = item['regarding_object_uuid']
+                staff_uuid = item['form_by_staff_uuid']
+                answers = json.loads(item['field_data'])
+                answers_edited = []
+                for x in answers:
+                    x['edit_date'] = edit_date
+                    x['related_object'] = related_object
+                    x['related_object_uuid'] = related_object_uuid
+                    x['staff_uuid'] = staff_uuid
+                    answers_edited.append(x)
+                restructured_form.append(answers_edited)
+        return restructured_form
 
 class GoogleSheets():
     def __init__(self,secret):
