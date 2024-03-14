@@ -1,7 +1,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/config
 git add . 
-git commit -m "Fixing indents"
+git commit -m "Re-adding class call"
 git push origin main
 '''
 # General Libraries
@@ -29,12 +29,15 @@ from googleapiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
 from google.oauth2 import service_account
 
-def __init__(self,key):
+class ServiceM8():
+
+    def __init__(self,key):
         self._base_url = 'https://api.servicem8.com/api_1.0'
         self.headers = headers = { 'accept': 'application/json'
                                   ,'authorization': f'Basic {key}'
           }
     def all_jobs_date(self,search_date, search_operator):
+        
         ''' Usable operators: 
             {eq : Equal
             ,ne : Not Equal
