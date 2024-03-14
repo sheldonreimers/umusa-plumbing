@@ -1,7 +1,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/config
 git add . 
-git commit -m "Updating ServiceM8 init"
+git commit -m "Updating for inventory_v2"
 git push origin main
 '''
 # General Libraries
@@ -205,14 +205,57 @@ class ServiceM8():
         response = requests.get(url = self.base_url + endpoint, headers = self.headers)
         return response
     
-    def get_form_responses(self, form_uuid):
+    def _get_form_responses(self, form_uuid):
         endpoint = f"/formresponse.json?%24filter=form_uuid%20eq%20'{form_uuid}'"
-        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self._headers)
         try:
             return response.json()
         except Exception as e:
             return str(e)
-                
+    
+    def get_form_responses(self, form_uuid):
+        responses = self._get_form_responses(form_uuid)
+        restructed_form = []
+        for item in responses:
+            edit_date = item['edit_date']
+            related_object = item['regarding_object']
+            related_object_uuid = item['regarding_object_uuid']
+            staff_uuid = item['form_by_staff_uuid']
+            answers = json.loads(item['field_data'])
+            answers_edited = []
+            for x in answers:
+                x['edit_date'] = edit_date
+                x['related_object'] = related_object
+                x['related_object_uuid'] = related_object_uuid
+                x['staff_uuid'] = staff_uuid
+                answers_edited.append(x)
+            restructed_form.append(answers_edited)
+        return restructed_form
+        
+    def get_form_responses_by_date(self, form_uuid, response_date):
+        responses = self._get_form_responses(form_uuid)
+        restructed_form = []
+        if isinstance(response_date,str):
+            ref_date = datetime.strptime(response_date, "%Y-%m-%d").date()
+        else:
+            ref_date = response_date.date()
+        for item in responses:
+            edit_date = datetime.fromisoformat(item['edit_date'])
+            if edit_date.date() == ref_date:
+                edit_date = item['edit_date']
+                related_object = item['regarding_object']
+                related_object_uuid = item['regarding_object_uuid']
+                staff_uuid = item['form_by_staff_uuid']
+                answers = json.loads(item['field_data'])
+                answers_edited = []
+                for x in answers:
+                    x['edit_date'] = edit_date
+                    x['related_object'] = related_object
+                    x['related_object_uuid'] = related_object_uuid
+                    x['staff_uuid'] = staff_uuid
+                    answers_edited.append(x)
+                restructed_form.append(answers_edited)
+        return restructed_form
 
 class GoogleSheets():
     def __init__(self,secret):
@@ -465,6 +508,24 @@ class GoogleSheets():
         values = result.get('values', [])
         return len(values)
 
+    def get_last_column(self,sheet_id,tab_name,starting_cell):
+        starting_col = re.findall('[A-Za-z]+', starting_cell)
+        result = 0
+        for i, letter in enumerate(reversed(starting_col)):
+            # Subtract 64 to convert ASCII to 1-based index
+            result += (ord(letter) - 64) * (26 ** i)
+        data = self._value_service.get(spreadsheetId = sheet_id
+                                       ,range = tab_name
+                                       ,majorDimension = 'COLUMNS').execute()
+        
+        for index, sublist in enumerate(data['values'][result:], start=result):
+            if not sublist:  # Check if the sublist is empty
+                break
+            result += 1
+        n, remainder = divmod(result - 1, 26)
+        column = chr(65 + remainder)
+        return column
+
 # Drive Not Built Yet:
 # ------------------------------------
 #     def share_sheet( self
@@ -565,6 +626,13 @@ class GoogleSheets():
                                     ).execute()
         except Exception as e:
             return str(e)
+
+    def lookup_tab(self,sheet_id,tab_name):
+        sheet_info = self._service.get(spreadsheetId=sheet_id).execute()['sheets']
+        for x in sheet_info:
+            if tab_name in x['properties'].values():
+                return x['properties']
+        return False
 
 class OneDrive():
     
