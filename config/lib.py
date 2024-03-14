@@ -1,7 +1,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/config
 git add . 
-git commit -m "Updating for inventory_v2"
+git commit -m "Updating for _base and self variables"
 git push origin main
 '''
 # General Libraries
@@ -29,10 +29,8 @@ from googleapiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
 from google.oauth2 import service_account
 
-class ServiceM8():
-
-    def __init__(self,key):
-        self.base_url = 'https://api.servicem8.com/api_1.0'
+def __init__(self,key):
+        self._base_url = 'https://api.servicem8.com/api_1.0'
         self.headers = headers = { 'accept': 'application/json'
                                   ,'authorization': f'Basic {key}'
           }
@@ -52,12 +50,12 @@ class ServiceM8():
             except:
                 print('unable to convert to string')
         endpoint = f"/job.json?%24filter=date%20{search_operator}%20'{search_date}'"
-        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
         return response.json()
 
     def get_job_activity(self,job_uuid):
         endpoint = f'/jobactivity.json?%24filter=job_uuid%20eq%20{job_uuid}'
-        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
         return response.json()
 
     def job_activity_dated(self,search_date, search_operator):
@@ -83,7 +81,7 @@ class ServiceM8():
             except:
                 print('unable to convert to string')
         endpoint = f"/jobmaterial.json?%24filter=edit_date%20{search_operator}%20'{search_date}'"
-        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
         try:
             return response.json()
         except: 
@@ -91,25 +89,25 @@ class ServiceM8():
 
     def active_materials(self):
         endpoint = '/material.json'
-        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
         response_json = response.json()
         active_materials = [item for item in response_json if item.get('active') == 1]
         return active_materials
 
     def get_job_by_uuid(self,job_uuid):
         endpoint = f'/job/{job_uuid}.json'
-        response = requests.get(url = self.base_url + endpoint, headers = self.headers).json()
+        response = requests.get(url = self._base_url + endpoint, headers = self.headers).json()
         return response
         
     def get_attachments_by_job(self,job_uuid):
         endpoint = f'/attachment.json?%24filter=related_object_uuid%20eq%20{job_uuid}'
-        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
         response_json = response.json()
         return response_json
     
     def get_attachments_by_date(self,search_date,related_object = 'job'):
         endpoint = f"/attachment.json?%24filter=edit_date%20gt%20'{search_date}'"
-        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
         response_json = response.json()
         search_date_dt = datetime.strptime(search_date, "%Y-%m-%d")
         filtered_json = []
@@ -127,7 +125,7 @@ class ServiceM8():
                          video - Download a video file
         '''
         endpoint = f'/attachment/{asset_uuid}.file'
-        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
         try:
             response_url = response.url
             image_response = requests.get(response_url).content
@@ -175,13 +173,13 @@ class ServiceM8():
 
     def get_customer_details(self,customer_uuid):
         endpoint = f'/company/{customer_uuid}.json'
-        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
         response_json = response.json()
         return response_json
     
     def get_attachments_by_date(self,search_date,related_object = 'job'):
         endpoint = f"/attachment.json?%24filter=edit_date%20gt%20'{search_date}'"
-        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
         response_json = response.json()
         search_date_dt = datetime.strptime(search_date, "%Y-%m-%d")
         filtered_json = []
@@ -193,7 +191,7 @@ class ServiceM8():
     
     def get_all_staff(self):
         endpoint = '/staff.json'
-        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
         try:
             response_json = response.json()
             return response_json
@@ -202,7 +200,7 @@ class ServiceM8():
 
     def get_staff_by_uuid(self,staff_uuid):
         endpoint = f'/staff/{staff_uuid}.json'
-        response = requests.get(url = self.base_url + endpoint, headers = self.headers)
+        response = requests.get(url = self._base_url + endpoint, headers = self.headers)
         return response
     
     def _get_form_responses(self, form_uuid):
@@ -260,9 +258,9 @@ class ServiceM8():
 class GoogleSheets():
     def __init__(self,secret):
         creds = service_account.Credentials.from_service_account_info(secret)
-        self.service = build('sheets', 'v4', credentials=creds).spreadsheets()
+        self._service = build('sheets', 'v4', credentials=creds).spreadsheets()
         
-        self.value_service = self.service.values()
+        self._value_service = self._service.values()
         
     def _end_col(self,num):
         if num <= 0:
@@ -283,7 +281,7 @@ class GoogleSheets():
             
         ranges = tab_name+'!'+starting_cell+':'+ending_cell
             
-        payload = self.value_service.batchGet(spreadsheetId=sheet_id
+        payload = self._value_service.batchGet(spreadsheetId=sheet_id
                                              ,dateTimeRenderOption = 'FORMATTED_STRING'
                                              ,ranges = ranges
                                             )
@@ -349,7 +347,7 @@ class GoogleSheets():
                 ]
                }
         
-        payload = self.value_service.batchClearByDataFilter( spreadsheetId = sheet_id
+        payload = self._value_service.batchClearByDataFilter( spreadsheetId = sheet_id
                                                             ,body = body
                                                            )
         response = payload.execute()
@@ -383,7 +381,7 @@ class GoogleSheets():
                        "responseValueRenderOption": "FORMATTED_VALUE"
                       }
         
-        payload = self.value_service.batchUpdate(spreadsheetId = sheet_id,body = insert_body)
+        payload = self._value_service.batchUpdate(spreadsheetId = sheet_id,body = insert_body)
         response = payload.execute()
 
     @retry(tries=2,delay = 5)
@@ -403,7 +401,7 @@ class GoogleSheets():
 
         body = {"values": upload_list}
         ranges = f"'{tab_name}'!{starting_cell}"
-        payload = self.value_service.append( spreadsheetId = sheet_id
+        payload = self._value_service.append( spreadsheetId = sheet_id
                                             ,body = body
                                             ,range = ranges
                                             ,valueInputOption = 'USER_ENTERED'
@@ -428,7 +426,7 @@ class GoogleSheets():
                 "values": [[cell_value]]
                }
         
-        payload = self.value_service.update( spreadsheetId = sheet_id
+        payload = self._value_service.update( spreadsheetId = sheet_id
                                             ,range = update_range
                                             ,body = body
                                             ,valueInputOption = formatted_state
@@ -452,7 +450,7 @@ class GoogleSheets():
                 "values": update_lst
                }
         
-        payload = self.value_service.update( spreadsheetId = sheet_id
+        payload = self._value_service.update( spreadsheetId = sheet_id
                                             ,range = update_range
                                             ,body = body
                                             ,valueInputOption = formatted_state
@@ -483,7 +481,7 @@ class GoogleSheets():
             "values": [values]
         }
 
-        payload = self.value_service.update(
+        payload = self._value_service.update(
             spreadsheetId=sheet_id,
             range=update_range,
             body=body,
@@ -500,7 +498,7 @@ class GoogleSheets():
         column_ref = re.search(pattern, starting_cell).group()
         range_name = f"'{tab_name}'!{column_ref}:{column_ref}"
         result = (
-            self.value_service.get(
+            self._value_service.get(
                 spreadsheetId=sheet_id,
                 range=range_name
             ).execute()
@@ -581,12 +579,12 @@ class GoogleSheets():
                    ,sheet_id
                    ,tab_name
                    ,row_number):
-        sheet_details = self.service.get(spreadsheetId=sheet_id).execute()
+        sheet_details = self._service.get(spreadsheetId=sheet_id).execute()
         for sheet in sheet_details['sheets']:
             if sheet['properties']['title'] == tab_name:
                 tab_id = sheet['properties']['sheetId']
 
-        request = self.service.batchUpdate(
+        request = self._service.batchUpdate(
             spreadsheetId=sheet_id,
             body={
                 "requests": [
@@ -621,7 +619,7 @@ class GoogleSheets():
                 ]
                }
         try:
-            self.service.batchUpdate( spreadsheetId = sheet_id
+            self._service.batchUpdate( spreadsheetId = sheet_id
                                      ,body = body
                                     ).execute()
         except Exception as e:
