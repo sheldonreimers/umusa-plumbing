@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/file_uploader
 git add . 
-git commit -m "printing directory"
+git commit -m "Testing last run saves"
 git push origin main
 '''
 # System Library Import & directories
@@ -42,8 +42,6 @@ lrj_path = 'config/last_run.json'
 # Loaded with github pull
 with open(lrj_path, 'r') as json_file:
     search_date = json.load(json_file)['last_upload']
-
-print('Search after: ',search_date)
       
 # Retrieving all creeated folders
 folder_data = od.get_items_by_folder_id(servicem8_attachments_folder).json()['value']
@@ -60,6 +58,11 @@ else:
     print(len(dated_attachments), ' need to be uploaded')
 
 print(os.getcwd())
+
+last_upload = {'last_upload':now_date.strftime("%Y-%m-%d %T")}}
+
+with open(lrj_path, 'w') as json_file:
+        json.dump(last_upload, json_file)
 
 # sorted_attachments = sorted(dated_attachments, key=lambda x: x.get('edit_date', ''))
 
