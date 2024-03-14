@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/file_uploader
 git add . 
-git commit -m "Updating to review date to yesterday"
+git commit -m "Updating to script V2"
 git push origin main
 '''
 # System Library Import & directories
@@ -36,15 +36,27 @@ od = OneDrive(umusa_azure)
 # Script Variables
 servicem8_attachments_folder = '4B4564E48AE9C501!523357'
 sa_timezone = pytz.timezone('Africa/Johannesburg')
-now_date = dt.now(sa_timezone)#.strftime("%Y-%m-%d")
-review_date = (now_date - timedelta(days=1)).strftime("%Y-%m-%d")
+now_date = dt.now(sa_timezone)
+lrj_path = 'config/last_run.json'
+
+# Loaded with github pull
+with open(lrj_path, 'r') as json_file:
+    search_date = json.load(json_file)['last_upload']
 
 # Retrieving all creeated folders
 folder_data = od.get_items_by_folder_id(servicem8_attachments_folder).json()['value']
 
-dated_attachments = sm8.get_attachments_by_date(review_date)
+dated_attachments = sm8.get_attachments_gt_datetime(search_date)
 
-unique_values = {item['related_object_uuid'] for item in dated_attachments}
+if len(dated_attachments) == 0:
+    last_upload = {'last_upload':now_date.strftime("%Y-%m-%d %T")}
+    with open(lrj_path, 'w') as json_file:
+            json.dump(last_upload, json_file)
+    sys.exit('No new attachtments')    
+
+sorted_attachments = sorted(dated_attachments, key=lambda x: x.get('edit_date', ''))
+
+unique_values = {item['related_object_uuid'] for item in sorted_attachments}
 
 for x in unique_values:
     job_data = sm8.get_job_by_uuid(x)
@@ -57,8 +69,11 @@ for x in unique_values:
             if item.get('name') == folder_name:
                 folder_id = item['id']
         existing_files = od.get_items_by_folder_id(folder_id).json()['value']
-        existing_file_no = max([int(files['name'].split('_')[-1].split('.')[0]) for files in existing_files])
-        file_name_no = existing_file_no+1
+        if len(existing_files) > 0:
+            existing_file_no = max([int(files['name'].split('_')[-1].split('.')[0]) for files in existing_files])
+            file_name_no = existing_file_no+1
+        else:
+            file_name_no = 1
     else:
         created_folder = od.create_folder( parent_folder_id = servicem8_attachments_folder
                                           ,folder_name = folder_name
@@ -66,10 +81,10 @@ for x in unique_values:
         folder_id = created_folder[1]
         file_name_no = 1
     attachment_data = []
-    for attachment in dated_attachments:
+    for attachment in sorted_attachments:
         if attachment.get('related_object_uuid') == x:
             attachment_data.append(attachment)
-    for y in attachment_data:
+    for y in (attachment_data:
         attachment_uuid = y['uuid']
         file_type = y['attachment_source']
         file_ext = y['file_type']
@@ -106,3 +121,7 @@ for x in unique_values:
                            ,file_content = photo_data
                           )
         file_name_no += 1
+        last_upload = {'last_upload':y['edit_date']}
+
+with open(rj_path, 'w') as json_file:
+        json.dump(last_upload, json_file)
