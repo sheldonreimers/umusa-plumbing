@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/file_uploader
 git add . 
-git commit -m "Testing last run saves"
+git commit -m "Adding error handling for writing function"
 git push origin main
 '''
 # System Library Import & directories
@@ -38,7 +38,6 @@ servicem8_attachments_folder = '4B4564E48AE9C501!523357'
 sa_timezone = pytz.timezone('Africa/Johannesburg')
 now_date = dt.now(sa_timezone)
 lrj_path = 'config/last_run.json'
-
 # Loaded with github pull
 with open(lrj_path, 'r') as json_file:
     search_date = json.load(json_file)['last_upload']
@@ -61,9 +60,12 @@ print(os.getcwd())
 
 last_upload = {'last_upload':now_date.strftime("%Y-%m-%d %T")}
 
-with open(lrj_path, 'w') as json_file:
+try:
+    with open(lrj_path, 'w') as json_file:
         json.dump(last_upload, json_file)
-
+    print("File successfully updated.")
+except Exception as e:
+    print(f"Error occurred while updating the file: {e}")
 # sorted_attachments = sorted(dated_attachments, key=lambda x: x.get('edit_date', ''))
 
 # unique_values = {item['related_object_uuid'] for item in sorted_attachments}
