@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/file_uploader
 git add . 
-git commit -m "Adding more print functions for logging"
+git commit -m "Correcting print bracket"
 git push origin main
 '''
 # System Library Import & directories
@@ -57,7 +57,7 @@ if len(dated_attachments) == 0:
     print(lrj_path,'updated on exit')
     sys.exit('No new attachtments')
 else:
-    print(len(dated_attachments), ' need to be uploaded'))
+    print(len(dated_attachments), ' need to be uploaded')
 
 sorted_attachments = sorted(dated_attachments, key=lambda x: x.get('edit_date', ''))
 
