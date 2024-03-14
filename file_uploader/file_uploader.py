@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/file_uploader
 git add . 
-git commit -m "Correcting print path"
+git commit -m "Adding more print functions for logging"
 git push origin main
 '''
 # System Library Import & directories
@@ -43,6 +43,8 @@ lrj_path = 'config/last_run.json'
 with open(lrj_path, 'r') as json_file:
     search_date = json.load(json_file)['last_upload']
 
+print('Search after: ',search_date)
+      
 # Retrieving all creeated folders
 folder_data = od.get_items_by_folder_id(servicem8_attachments_folder).json()['value']
 
@@ -53,7 +55,9 @@ if len(dated_attachments) == 0:
     with open(lrj_path, 'w') as json_file:
             json.dump(last_upload, json_file)
     print(lrj_path,'updated on exit')
-    sys.exit('No new attachtments')    
+    sys.exit('No new attachtments')
+else:
+    print(len(dated_attachments), ' need to be uploaded'))
 
 sorted_attachments = sorted(dated_attachments, key=lambda x: x.get('edit_date', ''))
 
