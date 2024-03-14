@@ -1,7 +1,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/config
 git add . 
-git commit -m "Updating for _base and self variables"
+git commit -m "Fixing indents"
 git push origin main
 '''
 # General Libraries
@@ -34,14 +34,12 @@ def __init__(self,key):
         self.headers = headers = { 'accept': 'application/json'
                                   ,'authorization': f'Basic {key}'
           }
-
-
     def all_jobs_date(self,search_date, search_operator):
-        '''Usable operators: 
-                {eq : Equal
-                ,ne : Not Equal
-                ,gt : Greater Than
-                ,lt : Less Than}'''
+        ''' Usable operators: 
+            {eq : Equal
+            ,ne : Not Equal
+            ,gt : Greater Than
+            ,lt : Less Than}'''
         if isinstance(search_date,str):
             pass
         else:
