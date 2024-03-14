@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/file_uploader
 git add . 
-git commit -m "Removing TQDM"
+git commit -m "Updating to review date to yesterday"
 git push origin main
 '''
 # System Library Import & directories
@@ -37,11 +37,12 @@ od = OneDrive(umusa_azure)
 servicem8_attachments_folder = '4B4564E48AE9C501!523357'
 sa_timezone = pytz.timezone('Africa/Johannesburg')
 now_date = dt.now(sa_timezone).strftime("%Y-%m-%d")
+review_date = now_date - timedelta(days=1)
 
 # Retrieving all creeated folders
 folder_data = od.get_items_by_folder_id(servicem8_attachments_folder).json()['value']
 
-dated_attachments = sm8.get_attachments_by_date(now_date)
+dated_attachments = sm8.get_attachments_by_date(review_date)
 
 unique_values = {item['related_object_uuid'] for item in dated_attachments}
 
