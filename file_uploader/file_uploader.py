@@ -59,7 +59,7 @@ else:
 
 print(os.getcwd())
 
-last_upload = {'last_upload':now_date.strftime("%Y-%m-%d %T")}}
+last_upload = {'last_upload':now_date.strftime("%Y-%m-%d %T")}
 
 with open(lrj_path, 'w') as json_file:
         json.dump(last_upload, json_file)
