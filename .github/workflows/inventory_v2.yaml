@@ -9,8 +9,8 @@ on:
 
   # Define schedule for cron job
   schedule:
-    - cron: '0 2 * * *' # Runs every midnight on Sundays
-
+    - cron: '0 2,7 * * *' # Runs day at hour 2 & 7 UTC
+    
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
