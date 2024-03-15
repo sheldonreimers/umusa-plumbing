@@ -8,7 +8,7 @@ on:
 
   # Define schedule for cron job
   schedule:
-    - cron: '0 2 * * *' # Runs 4am UTC Daily
+    - cron: '0 4-18 * * *' # Runs from 4am UTC to 6pm UTC Daily
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
