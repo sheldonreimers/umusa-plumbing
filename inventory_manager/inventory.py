@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/inventory_manager
 git add . 
-git commit -m "Removing first line comma"
+git commit -m "Updating for error from V2 Libraray update"
 git push origin main
 '''
 # System Library Import & directories
@@ -66,7 +66,7 @@ active_staff['full_name'] = active_staff['first'] + ' '+active_staff['last']
 active_staff.drop(labels = ['first','last'],axis = 1,inplace = True)
 
 ## Getting form responses & filtering for the date
-all_form_responses = sm8.get_form_responses(form_uuid = '317211c5-7ba8-4e87-ba03-ac6e73e3eda6')
+all_form_responses = sm8._get_form_responses(form_uuid = '317211c5-7ba8-4e87-ba03-ac6e73e3eda6')
 
 for d in all_form_responses:
     # Split the timestamp string at the space character and keep only the date part
@@ -120,6 +120,10 @@ try:
     gsheet_df = gpy.sheet_to_df( sheet_id = '1_fuV4FDD8LrLgbWrgMaq_o3Cz_d7yisSYFLWust1nOw'
                                 ,tab_name = tab_name_str
                                 ,starting_cell = 'A1'
+                                ,ending_cell=gpy.get_last_column(sheet_id = '1_fuV4FDD8LrLgbWrgMaq_o3Cz_d7yisSYFLWust1nOw'
+                                                                 ,tab_name = tab_name_str
+                                                                 ,starting_cell='A1'
+                                                                )
                                )
 
     complete_ref = gsheet_df[[ 'full_name'
