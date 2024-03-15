@@ -51,7 +51,7 @@ if len(dated_attachments) == 0:
     last_upload = {'last_upload':now_date.strftime("%Y-%m-%d %T")}
     with open(lrj_path, 'w') as json_file:
             json.dump(last_upload, json_file)
-    sys.exit('No new attachtments')
+    raise Exception('No new attachments')
     
 sorted_attachments = sorted(dated_attachments, key=lambda x: x.get('edit_date', ''))
 
