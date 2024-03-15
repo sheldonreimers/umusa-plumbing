@@ -1,8 +1,8 @@
-`# Committing Commands
+# Committing Commands
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/inventory_manager
 git add . 
-git commit -m "updating all files"
+git commit -m "Removing first line comma"
 git push origin main
 '''
 # System Library Import & directories
