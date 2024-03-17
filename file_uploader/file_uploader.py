@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/file_uploader
 git add . 
-git commit -m "Updating system Exit to Raise Exception"
+git commit -m "Adding in Finally Statement"
 git push origin main
 '''
 # System Library Import & directories
@@ -125,10 +125,8 @@ try:
             last_upload = {'last_upload':y['edit_date']}
 
 except Exception as e:
-    with open(lrj_path, 'w') as json_file:
-        json.dump(last_upload, json_file)
     raise Exception(e)
-    
 
-with open(lrj_path, 'w') as json_file:
+finally:
+    with open(lrj_path, 'w') as json_file:
         json.dump(last_upload, json_file)
