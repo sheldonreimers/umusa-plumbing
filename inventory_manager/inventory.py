@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/inventory_manager
 git add . 
-git commit -m "Updating for error from V2 Libraray update"
+git commit -m "Adding Monday Creation Logic"
 git push origin main
 '''
 # System Library Import & directories
@@ -30,6 +30,11 @@ servicem8_secret = os.environ.get('SERVICEM8_SECRET')
 gpy = GoogleSheets(umusa_secret)
 sm8 = ServiceM8(servicem8_secret)
 
+# Script Variables
+sm8_role = '2605a914-054a-46cc-948e-f300e516fecb'
+sm_stock_form = '317211c5-7ba8-4e87-ba03-ac6e73e3eda6'
+sheet_id = '1_fuV4FDD8LrLgbWrgMaq_o3Cz_d7yisSYFLWust1nOw'
+
 # Setting datestamps for script for filtering to previous week
 sa_timezone = pytz.timezone('Africa/Johannesburg')
 now_date = dt.now(sa_timezone)
@@ -40,6 +45,16 @@ if now_date.weekday() == 0:  # Monday
     previous_day_date = now_date - timedelta(days=1)
     previous_day_str = previous_day_date.strftime("%Y-%m-%d")
     now_str = tab_name_str
+    start_of_week_df = pd.DataFrame(columns = ['full_name', 'inventory'])
+    gpy.create_tab( sheet_id = sheet_id
+                   ,tab_name = tab_name_str
+                  )
+    gpy.df_to_sheet( df = start_of_week_df
+                ,sheet_id = sheet_id
+                ,tab_name = tab_name_str
+                ,starting_cell = 'A1'
+                ,is_append = False
+               )
 else:
     days_difference = now_date.weekday()
     week_date = now_date - timedelta(days=days_difference)
