@@ -553,14 +553,19 @@ class GoogleSheets():
         data = self._value_service.get(spreadsheetId = sheet_id
                                        ,range = tab_name
                                        ,majorDimension = 'COLUMNS').execute()
-        
-        for index, sublist in enumerate(data['values'][result:], start=result):
-            if not sublist:  # Check if the sublist is empty
-                break
-            result += 1
-        n, remainder = divmod(result - 1, 26)
-        column = chr(65 + remainder)
-        return column
+        try:
+            sheet_results = data['values'][result:]
+            for index, sublist in enumerate(sheet_results, start=result):
+                if not sublist:  # Check if the sublist is empty
+                    break
+                result += 1
+            n, remainder = divmod(result - 1, 26)
+            column = chr(65 + remainder)
+            return column
+        except:
+            pattern = r'[A-Za-z]+'
+            column_ref = re.search(pattern, starting_cell).group()
+            return column_ref
 
 # Drive Not Built Yet:
 # ------------------------------------
