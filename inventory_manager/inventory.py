@@ -2,9 +2,10 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/inventory_manager
 git add . 
-git commit -m "Adding Monday Creation Logic"
+git commit -m "Fixing logic for empty start of week"
 git push origin main
 '''
+## SYSTEMS IMPORTING & VARIABLE CREATION
 # System Library Import & directories
 import os
 import sys
@@ -18,13 +19,14 @@ from datetime import timedelta
 from datetime import datetime as dt
 
 # Add the directory containing your custom libraries to the path
-sys.path.append('config')
+# sys.path.append('config')
+sys.path.append('/Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/config')
 from lib import GoogleSheets
 from lib import ServiceM8
 
 # Access the secrets from environment variables
 umusa_secret = json.loads(os.environ.get('UMUSA_SECRET'))
-servicem8_secret = os.environ.get('SERVICEM8_SECRET')
+servicem8_secret = json.loads(os.environ.get('SERVICEM8_SECRET'))['authorization']
 
 ## Activating API Systems
 gpy = GoogleSheets(umusa_secret)
@@ -39,12 +41,11 @@ sheet_id = '1_fuV4FDD8LrLgbWrgMaq_o3Cz_d7yisSYFLWust1nOw'
 sa_timezone = pytz.timezone('Africa/Johannesburg')
 now_date = dt.now(sa_timezone)
 
+## SETTING DATE VARIABLES AND SYSTEM CHECKS FOR TAB CREATION
 if now_date.weekday() == 0:  # Monday
-    week_date = now_date - timedelta(days=7)
-    tab_name_str = week_date.strftime("%Y-%m-%d")
+    tab_name_str = now_date.strftime("%Y-%m-%d")
     previous_day_date = now_date - timedelta(days=1)
     previous_day_str = previous_day_date.strftime("%Y-%m-%d")
-    now_str = tab_name_str
     start_of_week_df = pd.DataFrame(columns = ['full_name', 'inventory'])
     gpy.create_tab( sheet_id = sheet_id
                    ,tab_name = tab_name_str
@@ -61,7 +62,6 @@ else:
     tab_name_str = week_date.strftime("%Y-%m-%d")
     previous_day_date = now_date - timedelta(days=1)
     previous_day_str = previous_day_date.strftime("%Y-%m-%d")
-    now_str = now_date.strftime("%Y-%m-%d")
 
 ## Retrieving staff data and filtering to active staff
 staff_cols = [ 'uuid'
@@ -89,85 +89,97 @@ for d in all_form_responses:
 
 latest_responses = [d for d in all_form_responses if previous_day_str == d['date_str']]
 
+gsheet_df = gpy.sheet_to_df( sheet_id = sheet_id
+                            ,tab_name = tab_name_str
+                            ,starting_cell = 'A1'
+                            ,ending_cell=gpy.get_last_column(sheet_id = sheet_id
+                                                             ,tab_name = tab_name_str
+                                                             ,starting_cell='A1'
+                                                            )
+                           )
+
 if len(latest_responses) == 0:
-    sys.exit('No new submissions')
-else:
-    pass
-
-updated_responses = []
-
-for x in range(len(latest_responses)):
-    responded_at = latest_responses[x]['timestamp']
-    staff_uuid = latest_responses[x]['form_by_staff_uuid']
-    job_uuid = latest_responses[x]['regarding_object_uuid']
-    form_responses = json.loads(latest_responses[x]['field_data'])
-    updated_answers = []
-    for i in range(len(form_responses)):
-        answer = form_responses[i]
-        if (answer['FieldType'] == 'Number') and (answer['Response'] != ''):
-            answer['responded_at'] = responded_at
-            answer['staff_uuid'] = staff_uuid
-            answer['job_uuid'] = job_uuid
-            response = answer['Response'].replace(',','.')
-            answer['Response'] = response
-            answer.pop('SortOrder')
-            answer.pop('UUID')
-            updated_answers.append(answer)
-    updated_responses.extend(updated_answers)
-    
-updated_respnses_df = pd.DataFrame(updated_responses)
-
-merged_df = updated_respnses_df.merge( active_staff
-                                      ,how = 'inner'
-                                      ,left_on = 'staff_uuid'
-                                      ,right_on = 'uuid'
-                                     ).drop(labels = [ 'staff_uuid'
-                                                      ,'uuid'
-                                                      ,'FieldType']
-                                            ,axis = 1).astype({'Response':float})
-
-previous_day_agg_df = merged_df.groupby([ 'full_name'
-                                         ,'Question']).sum('Response'
-                                                          ).reset_index().rename(columns = {'Response':previous_day_str
-                                                                              ,'Question':'inventory'})
-
-try:
-    gsheet_df = gpy.sheet_to_df( sheet_id = '1_fuV4FDD8LrLgbWrgMaq_o3Cz_d7yisSYFLWust1nOw'
-                                ,tab_name = tab_name_str
-                                ,starting_cell = 'A1'
-                                ,ending_cell=gpy.get_last_column(sheet_id = '1_fuV4FDD8LrLgbWrgMaq_o3Cz_d7yisSYFLWust1nOw'
-                                                                 ,tab_name = tab_name_str
-                                                                 ,starting_cell='A1'
-                                                                )
-                               )
-
-    complete_ref = gsheet_df[[ 'full_name'
-                              ,'inventory']].append(previous_day_agg_df[[ 'full_name'
-                                                                         ,'inventory']]
-                                                   ).drop_duplicates(ignore_index = True)
-
-
-    full_merge = complete_ref.merge( gsheet_df
-                                    ,how = 'left'
-                                    ,on = ['full_name','inventory']
-                                   ).merge( previous_day_agg_df
-                                           ,how = 'left'
-                                           ,on = ['full_name','inventory']
-                                          )
-
-    gpy.df_to_sheet( full_merge.fillna(0)
-                    ,sheet_id = '1_fuV4FDD8LrLgbWrgMaq_o3Cz_d7yisSYFLWust1nOw'
+    gsheet_df[previous_day_str] = ''
+    gpy.df_to_sheet( df = gsheet_df
+                    ,sheet_id = sheet_id
                     ,tab_name = tab_name_str
                     ,starting_cell = 'A1'
                     ,is_append = False
-                   )
-except Exception as e:
-    if 'Unable to parse range' in str(e):
-        gpy.df_to_sheet( previous_day_agg_df.fillna(0)
-                        ,sheet_id = '1_fuV4FDD8LrLgbWrgMaq_o3Cz_d7yisSYFLWust1nOw'
+               )
+else:
+    updated_responses = []
+    
+    for x in range(len(latest_responses)):
+        responded_at = latest_responses[x]['timestamp']
+        staff_uuid = latest_responses[x]['form_by_staff_uuid']
+        job_uuid = latest_responses[x]['regarding_object_uuid']
+        form_responses = json.loads(latest_responses[x]['field_data'])
+        updated_answers = []
+        for i in range(len(form_responses)):
+            answer = form_responses[i]
+            if (answer['FieldType'] == 'Number') and (answer['Response'] != ''):
+                answer['responded_at'] = responded_at
+                answer['staff_uuid'] = staff_uuid
+                answer['job_uuid'] = job_uuid
+                response = answer['Response'].replace(',','.')
+                answer['Response'] = response
+                answer.pop('SortOrder')
+                answer.pop('UUID')
+                updated_answers.append(answer)
+        updated_responses.extend(updated_answers)
+        
+    updated_respnses_df = pd.DataFrame(updated_responses)
+    
+    merged_df = updated_respnses_df.merge( active_staff
+                                          ,how = 'inner'
+                                          ,left_on = 'staff_uuid'
+                                          ,right_on = 'uuid'
+                                         ).drop(labels = [ 'staff_uuid'
+                                                          ,'uuid'
+                                                          ,'FieldType']
+                                                ,axis = 1).astype({'Response':float})
+    
+    previous_day_agg_df = merged_df.groupby([ 'full_name'
+                                             ,'Question']).sum('Response'
+                                                              ).reset_index().rename(columns = {'Response':previous_day_str
+                                                                                  ,'Question':'inventory'})
+    try:
+        gsheet_df = gpy.sheet_to_df( sheet_id = sheet_id
+                                    ,tab_name = tab_name_str
+                                    ,starting_cell = 'A1'
+                                    ,ending_cell=gpy.get_last_column(sheet_id = sheet_id
+                                                                     ,tab_name = tab_name_str
+                                                                     ,starting_cell='A1'
+                                                                    )
+                                   )
+    
+        complete_ref = gsheet_df[[ 'full_name'
+                                  ,'inventory']].append(previous_day_agg_df[[ 'full_name'
+                                                                             ,'inventory']]
+                                                       ).drop_duplicates(ignore_index = True)
+    
+    
+        full_merge = complete_ref.merge( gsheet_df
+                                        ,how = 'left'
+                                        ,on = ['full_name','inventory']
+                                       ).merge( previous_day_agg_df
+                                               ,how = 'left'
+                                               ,on = ['full_name','inventory']
+                                              )
+    
+        gpy.df_to_sheet( full_merge.fillna(0)
+                        ,sheet_id = sheet_id
                         ,tab_name = tab_name_str
                         ,starting_cell = 'A1'
                         ,is_append = False
                        )
-    else:
-        print(str(e))
+    except Exception as e:
+        if 'Unable to parse range' in str(e):
+            gpy.df_to_sheet( previous_day_agg_df.fillna(0)
+                            ,sheet_id = sheet_id
+                            ,tab_name = tab_name_str
+                            ,starting_cell = 'A1'
+                            ,is_append = False
+                           )
+        else:
+            print(str(e))
