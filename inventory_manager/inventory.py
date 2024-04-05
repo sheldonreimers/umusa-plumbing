@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/inventory_manager
 git add . 
-git commit -m "Fixing ServiceM8 Auth"
+git commit -m "Adding 0 to na values"
 git push origin main
 '''
 ## SYSTEMS IMPORTING & VARIABLE CREATION
@@ -100,7 +100,7 @@ gsheet_df = gpy.sheet_to_df( sheet_id = sheet_id
 
 if len(latest_responses) == 0:
     gsheet_df[previous_day_str] = ''
-    gpy.df_to_sheet( df = gsheet_df
+    gpy.df_to_sheet( df = gsheet_df.fillna(0)
                     ,sheet_id = sheet_id
                     ,tab_name = tab_name_str
                     ,starting_cell = 'A1'
