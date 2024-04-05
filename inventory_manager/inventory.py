@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/inventory_manager
 git add . 
-git commit -m "Fixing lib path dir"
+git commit -m "Fixing ServiceM8 Auth"
 git push origin main
 '''
 ## SYSTEMS IMPORTING & VARIABLE CREATION
@@ -26,7 +26,7 @@ from lib import ServiceM8
 
 # Access the secrets from environment variables
 umusa_secret = json.loads(os.environ.get('UMUSA_SECRET'))
-servicem8_secret = json.loads(os.environ.get('SERVICEM8_SECRET'))['authorization']
+servicem8_secret = os.environ.get('SERVICEM8_SECRET')
 
 ## Activating API Systems
 gpy = GoogleSheets(umusa_secret)
