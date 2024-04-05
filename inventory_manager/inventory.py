@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/inventory_manager
 git add . 
-git commit -m "Fixing logic for empty start of week"
+git commit -m "Fixing lib path dir"
 git push origin main
 '''
 ## SYSTEMS IMPORTING & VARIABLE CREATION
@@ -19,8 +19,8 @@ from datetime import timedelta
 from datetime import datetime as dt
 
 # Add the directory containing your custom libraries to the path
-# sys.path.append('config')
-sys.path.append('/Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/config')
+sys.path.append('config')
+# sys.path.append('/Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/config')
 from lib import GoogleSheets
 from lib import ServiceM8
 
