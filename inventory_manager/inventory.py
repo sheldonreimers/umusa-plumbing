@@ -43,25 +43,25 @@ now_date = dt.now(sa_timezone)
 
 ## SETTING DATE VARIABLES AND SYSTEM CHECKS FOR TAB CREATION
 if now_date.weekday() == 0:  # Monday
+    tab_name_str = (now_date - timedelta(days=7)).strftime("%Y-%m-%d")  # Monday date for the previous week
+elif now_date.weekday() == 1: # Tuesday
     tab_name_str = now_date.strftime("%Y-%m-%d")
-    previous_day_date = now_date - timedelta(days=1)
-    previous_day_str = previous_day_date.strftime("%Y-%m-%d")
-    start_of_week_df = pd.DataFrame(columns = ['full_name', 'inventory'])
+    start_of_week_df = pd.DataFrame(columns=['full_name', 'inventory'])
     gpy.create_tab( sheet_id = sheet_id
-                   ,tab_name = tab_name_str
+                   ,tab_name = new_week_tab_name
                   )
-    gpy.df_to_sheet( df = start_of_week_df
-                ,sheet_id = sheet_id
-                ,tab_name = tab_name_str
-                ,starting_cell = 'A1'
-                ,is_append = False
-               )
+    gpy.df_to_sheet( df=start_of_week_df
+                    ,sheet_id=sheet_id
+                    ,tab_name=tab_name_str
+                    ,starting_cell='A1'
+                    ,is_append=False)
 else:
     days_difference = now_date.weekday()
     week_date = now_date - timedelta(days=days_difference)
     tab_name_str = week_date.strftime("%Y-%m-%d")
-    previous_day_date = now_date - timedelta(days=1)
-    previous_day_str = previous_day_date.strftime("%Y-%m-%d")
+
+previous_day_date = now_date - timedelta(days=1)
+previous_day_str = previous_day_date.strftime("%Y-%m-%d")
 
 ## Retrieving staff data and filtering to active staff
 staff_cols = [ 'uuid'
