@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/inventory_manager
 git add . 
-git commit -m "Adding 0 to na values"
+git commit -m "Changing Monday & Tuesday Logic"
 git push origin main
 '''
 ## SYSTEMS IMPORTING & VARIABLE CREATION
