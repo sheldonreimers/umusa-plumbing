@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/inventory_manager
 git add . 
-git commit -m "Changing Monday & Tuesday Logic"
+git commit -m "Fixing tab name error"
 git push origin main
 '''
 ## SYSTEMS IMPORTING & VARIABLE CREATION
@@ -48,7 +48,7 @@ elif now_date.weekday() == 1: # Tuesday
     tab_name_str = now_date.strftime("%Y-%m-%d")
     start_of_week_df = pd.DataFrame(columns=['full_name', 'inventory'])
     gpy.create_tab( sheet_id = sheet_id
-                   ,tab_name = new_week_tab_name
+                   ,tab_name = tab_name_str
                   )
     gpy.df_to_sheet( df=start_of_week_df
                     ,sheet_id=sheet_id
