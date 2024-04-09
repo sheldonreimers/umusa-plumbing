@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/inventory_manager
 git add . 
-git commit -m "Fixing tab name error"
+git commit -m "Correcting tab_name to week start"
 git push origin main
 '''
 ## SYSTEMS IMPORTING & VARIABLE CREATION
@@ -45,7 +45,7 @@ now_date = dt.now(sa_timezone)
 if now_date.weekday() == 0:  # Monday
     tab_name_str = (now_date - timedelta(days=7)).strftime("%Y-%m-%d")  # Monday date for the previous week
 elif now_date.weekday() == 1: # Tuesday
-    tab_name_str = now_date.strftime("%Y-%m-%d")
+    tab_name_str = (now_date - timedelta(days=1)).strftime("%Y-%m-%d")
     start_of_week_df = pd.DataFrame(columns=['full_name', 'inventory'])
     gpy.create_tab( sheet_id = sheet_id
                    ,tab_name = tab_name_str
