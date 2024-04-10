@@ -43,7 +43,7 @@ with open(lrj_path, 'r') as json_file:
     search_date = json.load(json_file)['last_upload']
       
 # Retrieving all creeated folders
-folder_data = od.get_items_by_folder_id(servicem8_attachments_folder).json()['value']
+folder_data = od.get_items_by_folder_id(servicem8_attachments_folder)
 
 dated_attachments = sm8.get_attachments_gt_datetime(search_date)
 
@@ -69,7 +69,7 @@ else:
             for item in folder_data:
                 if item.get('name') == folder_name:
                     folder_id = item['id']
-            existing_files = od.get_items_by_folder_id(folder_id).json()['value']
+            existing_files = od.get_items_by_folder_id(folder_id)
             if len(existing_files) > 0:
                 existing_file_no = max([int(files['name'].split('_')[-1].split('.')[0]) for files in existing_files if files['name'].split('_')[-1].split('.')[0].isdigit()])
                 file_name_no = existing_file_no+1
