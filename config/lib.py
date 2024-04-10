@@ -1,7 +1,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/config
 git add . 
-git commit -m "Updating _headers"
+git commit -m "Updating OD get_items function"
 git push origin main
 '''
 # General Libraries
@@ -690,10 +690,10 @@ class OneDrive():
         
         # Dict Creations
         token_data = { 'client_id': client_id
-                           ,'client_secret': client_secret
-                           ,'refresh_token': refresh_token
-                           ,'grant_type': 'refresh_token'
-                          }
+                      ,'client_secret': client_secret
+                      ,'refresh_token': refresh_token
+                      ,'grant_type': 'refresh_token'
+                     }
         
         # POST for Access Tokens
         response = requests.post(token_endpoint, data=token_data)
@@ -705,17 +705,29 @@ class OneDrive():
                         ,'Content-Type': 'application/json'
                        }
         self.base_url = 'https://graph.microsoft.com/v1.0/me/drive'
-        # print(self.access_token)
+        # print(self.refresh_token)
         
     def get_folders(self):
         endpoint = '/root/children'
         response = requests.get(self.base_url+endpoint, headers=self.headers)
         return response
     
-    def get_items_by_folder_id(self,folder_id):
+    def get_items_by_folder_id(self, folder_id):
         endpoint = f'/items/{folder_id}/children'
-        response = requests.get(self.base_url+endpoint, headers=self.headers)
-        return response
+        response = requests.get(self.base_url + endpoint, headers=self.headers)
+        value_lst = response.json()['value']
+        
+        while True:
+            next_link = response.json().get('@odata.nextLink')
+            
+            if next_link:
+                response = requests.get(next_link, headers=self.headers)
+                value_lst.extend(response.json()['value'])
+            else:
+                break
+        
+        return value_lst
+
     
     @retry(tries=2,delay = 5)
     def create_folder(self,parent_folder_id, folder_name):
