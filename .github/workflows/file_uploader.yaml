@@ -58,7 +58,8 @@ jobs:
       # Runs a single command using the runners shell
       - name: File Uploader
         run: python file_uploader/file_uploader.py
-
+        continue-on-error: true
+      
       # Stage and commit changes
       - name: Commit changes
         run: |
@@ -66,9 +67,10 @@ jobs:
           git config --global user.name "GitHub Actions"
           git add .
           git commit -m "Update last_run.json"
-   
+      
       # Push changes back to repository
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+
