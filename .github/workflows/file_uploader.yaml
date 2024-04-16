@@ -23,12 +23,11 @@ jobs:
       SERVICEM8_SECRET: ${{ secrets.SERVICEM8_SECRET }}
       UMUSA_AZURE: ${{ secrets.UMUSA_AZURE }}
 
-    # Container settings for the job
-    container:
-      image: shelds92/umusa-plumbing-image:latest
-
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
       # Set up Python
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -36,7 +35,27 @@ jobs:
           python-version: '3.x'
           cache: 'pip'
 
-      # Runs a single command using the runner's shell
+      # Restore cached dependencies
+      - name: Restore cached dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('config/requirements.txt') }}
+            
+      # Install dependencies
+      - name: Install dependencies
+        run: pip install -r config/requirements.txt
+
+      # Cache dependencies for future runs
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('config/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # Runs a single command using the runners shell
       - name: File Uploader
         run: python file_uploader/file_uploader.py
         continue-on-error: true
