@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/file_uploader
 git add . 
-git commit -m "Removing Break"
+git commit -m "Updating to fix Folder Naming"
 git push origin main
 '''
 # System Library Import & directories
@@ -64,7 +64,7 @@ else:
         if generated_job_id[-2].isalpha():
             continue
         customer_name = sm8.get_customer_details(company_uuid)['name']
-        folder_name = '#'+generated_job_id+'; '+customer_name.replace(',',';')
+        folder_name = ('#'+generated_job_id+'; '+customer_name.replace(',',';')).replace('/','-')
         if any(folder_name == item.get('name') for item in folder_data):
             for item in folder_data:
                 if item.get('name') == folder_name:
