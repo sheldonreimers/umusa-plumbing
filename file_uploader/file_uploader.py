@@ -18,14 +18,7 @@ from datetime import timedelta
 from datetime import datetime as dt
 
 # Add the directory containing your custom libraries to the path
-# sys.path.append('config')
-
-## Check if works:
-# Get the absolute path to the 'lib' directory
-lib_path = os.path.abspath('lib')
-
-# Append the 'lib' directory to sys.path
-sys.path.append(lib_path)
+sys.path.append('config')
 from lib import GoogleSheets
 from lib import ServiceM8
 from lib import OneDrive
