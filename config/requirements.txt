@@ -17,7 +17,7 @@ pytz==2021.3
 # requests==2.26.0
 
 # Python HTTP library with thread-safe connection pooling
-urllib3==1.26.7
+urllib3==1.26.18
 
 # Client library for accessing Google APIs
 google-api-python-client==1.12.8
