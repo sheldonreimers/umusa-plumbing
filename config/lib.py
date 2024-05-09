@@ -21,6 +21,8 @@ from PIL import Image as PILImage
 import fitz  # PyMuPDF
 from IPython.display import display, Image
 import cv2
+from requests.auth import HTTPBasicAuth
+from requests.exceptions import HTTPError
 
 # Google Libraries
 from apiclient.http import MediaIoBaseDownload
@@ -35,7 +37,14 @@ class ServiceM8():
         self._base_url = 'https://api.servicem8.com/api_1.0'
         self._headers = headers = { 'accept': 'application/json'
                                   ,'authorization': f'Basic {key}'
-          }
+                                   }
+    def _handle_response(self, response):
+        try:
+            response.raise_for_status()
+        except Exception as e:
+            raise e  # Re-raise the caught exception
+
+        
     def all_jobs_date(self,search_date, search_operator):
         
         ''' Usable operators: 
@@ -97,8 +106,9 @@ class ServiceM8():
 
     def get_job_by_uuid(self,job_uuid):
         endpoint = f'/job/{job_uuid}.json'
-        response = requests.get(url = self._base_url + endpoint, headers = self._headers).json()
-        return response
+        response = requests.get(url = self._base_url + endpoint, headers = self._headers)
+        self._handle_response(response)
+        return response.json()
         
     def get_attachments_by_job(self,job_uuid):
         endpoint = f'/attachment.json?%24filter=related_object_uuid%20eq%20{job_uuid}'
@@ -124,11 +134,12 @@ class ServiceM8():
         response_json = response.json()
         search_datetime_dt = datetime.strptime(search_datetime, "%Y-%m-%d %H:%M:%S")
         filtered_json = []
-        for item in response_json:
-            edit_datetime = datetime.fromisoformat(item['edit_date'])
-            if edit_datetime > search_datetime_dt and item.get('related_object') == related_object:
-                filtered_json.append(item)
-        return filtered_json
+        return response_json
+        # for item in response_json:
+        #     edit_datetime = datetime.fromisoformat(item['edit_date'])
+        #     if edit_datetime > search_datetime_dt and item.get('related_object') == related_object:
+        #         filtered_json.append(item)
+        # return filtered_json
     
     def get_image(self,asset_uuid, file_type, file_path = None, return_type = None):
         ''' return_type: image - Shows the image

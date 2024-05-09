@@ -58,7 +58,11 @@ else:
     
     unique_values = {item['related_object_uuid'] for item in sorted_attachments}
     for x in unique_values:
-        job_data = sm8.get_job_by_uuid(x)
+        try:
+            job_data = sm8.get_job_by_uuid(x)
+        except Exception as e:
+            print(str(e))
+            continue
         company_uuid = job_data['company_uuid']
         generated_job_id = job_data['generated_job_id']
         if generated_job_id[-2].isalpha():
