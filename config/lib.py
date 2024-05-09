@@ -1,7 +1,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/config
 git add . 
-git commit -m "Updating OD get_items function"
+git commit -m "Removing commented out function"
 git push origin main
 '''
 # General Libraries
@@ -134,12 +134,11 @@ class ServiceM8():
         response_json = response.json()
         search_datetime_dt = datetime.strptime(search_datetime, "%Y-%m-%d %H:%M:%S")
         filtered_json = []
-        return response_json
-        # for item in response_json:
-        #     edit_datetime = datetime.fromisoformat(item['edit_date'])
-        #     if edit_datetime > search_datetime_dt and item.get('related_object') == related_object:
-        #         filtered_json.append(item)
-        # return filtered_json
+        for item in response_json:
+            edit_datetime = datetime.fromisoformat(item['edit_date'])
+            if edit_datetime > search_datetime_dt and item.get('related_object') == related_object:
+                filtered_json.append(item)
+        return filtered_json
     
     def get_image(self,asset_uuid, file_type, file_path = None, return_type = None):
         ''' return_type: image - Shows the image
