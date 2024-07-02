@@ -2,7 +2,7 @@
 '''
 cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/file_uploader
 git add . 
-git commit -m "Updating to fix Folder Naming"
+git commit -m "Adding Unsuccessful skipping"
 git push origin main
 '''
 # System Library Import & directories
@@ -62,6 +62,9 @@ else:
             job_data = sm8.get_job_by_uuid(x)
         except Exception as e:
             print(str(e))
+            continue
+        if job_data['status'] == 'Unsuccessful':
+            print('Unsuccessful Job: ',job_data['generated_job_id'])
             continue
         company_uuid = job_data['company_uuid']
         generated_job_id = job_data['generated_job_id']
