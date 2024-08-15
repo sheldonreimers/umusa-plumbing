@@ -1,8 +1,8 @@
 # Committing Commands
 '''
-cd /Users/sheldon.reimers/Documents/jupyterlab/umusa-plumbing/file_uploader
-git add . 
-git commit -m "Adding Unsuccessful skipping"
+cd /home/sheldonreimers/umusa-plumbing/file_uploader
+git add file_uploader.py
+git commit -m "Adjusting for empty customer profiles"
 git push origin main
 '''
 # System Library Import & directories
@@ -69,6 +69,9 @@ else:
         company_uuid = job_data['company_uuid']
         generated_job_id = job_data['generated_job_id']
         if generated_job_id[-2].isalpha():
+            continue
+        if len(company_uuid) == 0:
+            print('failed: ',generated_job_id)
             continue
         customer_name = sm8.get_customer_details(company_uuid)['name']
         folder_name = ('#'+generated_job_id+'; '+customer_name.replace(',',';')).replace('/','-')
