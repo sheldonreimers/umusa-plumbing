@@ -133,6 +133,7 @@ class ServiceM8():
         response = requests.get(url=self._base_url + endpoint, headers=self._headers)
         response_json = response.json()
         search_datetime_dt = datetime.strptime(search_datetime, "%Y-%m-%d %H:%M:%S")
+        # return response_json
         filtered_json = []
         for item in response_json:
             edit_datetime = datetime.fromisoformat(item['edit_date'])
