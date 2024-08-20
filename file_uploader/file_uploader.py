@@ -2,7 +2,7 @@
 '''
 cd /home/sheldonreimers/umusa-plumbing/file_uploader
 git add file_uploader.py
-git commit -m "Adding system variables"
+git commit -m "Adjusting write back of last run"
 git push origin main
 '''
 # System Library Import & directories
@@ -166,8 +166,8 @@ def uploadFiles():
                               )
             last_upload = {'last_upload':attachment_edited_at}
 
-    with open(lrj_path, 'w') as json_file:
-            json.dump(last_upload, json_file)
+            with open(lrj_path, 'w') as json_file:
+                    json.dump(last_upload, json_file)
 
 if __name__ == '__main__':
     uploadFiles()
