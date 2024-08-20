@@ -725,19 +725,46 @@ class OneDrive():
     
     def get_items_by_folder_id(self, folder_id):
         endpoint = f'/items/{folder_id}/children'
-        response = requests.get(self.base_url + endpoint, headers=self.headers)
-        value_lst = response.json()['value']
+        response = requests.get(self.base_url + endpoint, headers=self.headers).json()
+        value_lst = response['value']
         
+        # Initialize an empty list to hold dictionaries
+        response_list = []
+    
+        # Process the first batch of items
+        for item in value_lst:
+            item_dict = {
+                'downloadUrl': item.get('@microsoft.graph.downloadUrl'),
+                'createdAt': pd.to_datetime(item.get('createdDateTime')).strftime('%Y-%m-%d %H:%M:%S'),
+                'id': item.get('id'),
+                'name': item.get('name'),
+                'size': item.get('size'),
+                'lastModifiedAt': pd.to_datetime(item.get('lastModifiedDateTime')).strftime('%Y-%m-%d %H:%M:%S'),
+                'type': 'folder' if 'folder' in item.keys() else 'file'
+            }
+            response_list.append(item_dict)
+    
+        # Handle pagination if there are more items
         while True:
-            next_link = response.json().get('@odata.nextLink')
-            
+            next_link = response.get('@odata.nextLink')
             if next_link:
-                response = requests.get(next_link, headers=self.headers)
-                value_lst.extend(response.json()['value'])
+                response = requests.get(next_link, headers=self.headers).json()
+                value_response = response['value']
+                for next_item in value_response:
+                    next_item_dict = {
+                        'downloadUrl': next_item.get('@microsoft.graph.downloadUrl'),
+                        'createdAt': pd.to_datetime(next_item.get('createdDateTime')).strftime('%Y-%m-%d %H:%M:%S'),
+                        'id': next_item.get('id'),
+                        'name': next_item.get('name'),
+                        'size': next_item.get('size'),
+                        'lastModifiedAt': pd.to_datetime(next_item.get('lastModifiedDateTime')).strftime('%Y-%m-%d %H:%M:%S'),
+                        'type': 'folder' if 'folder' in next_item.keys() else 'file'
+                    }
+                    response_list.append(next_item_dict)
             else:
                 break
         
-        return value_lst
+        return response_list
 
     
     @retry(tries=2,delay = 5)
@@ -770,7 +797,8 @@ class OneDrive():
     def upload_file(self,parent_id,file_name,file_path=None,file_content=None):
         upload_headers = self.headers.copy()
         upload_headers['Content-Type'] = 'application/octet-stream'
-        if file_path != None and file_content == None:
+        # upload_headers['Content-Type'] = 'application/json'
+        if file_path and not file_content:
             endpoint = f'/items/{parent_id}:/{file_path.split("/")[-1]}:/content'
             with open(file_path, 'rb') as file:
                 file_content = file.read()
@@ -779,7 +807,7 @@ class OneDrive():
                                     ,data = file_content
                                    )
             return response
-        elif file_path == None and file_content != None:
+        elif not file_path and file_content:
             endpoint = f'/items/{parent_id}:/{file_name}:/content'
             response = requests.put( self.base_url+endpoint
                                     ,headers = upload_headers
