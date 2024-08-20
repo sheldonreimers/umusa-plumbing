@@ -2,7 +2,7 @@
 '''
 cd /home/sheldonreimers/umusa-plumbing/file_uploader
 git add file_uploader.py
-git commit -m "Implementing Updated Model"
+git commit -m "Removing TQDM"
 git push origin main
 '''
 # System Library Import & directories
@@ -14,7 +14,6 @@ import time,requests,json,pytz
 import pandas as pd
 
 from datetime import timedelta
-# from tqdm.notebook import tqdm, trange
 from datetime import datetime as dt
 
 # Add the directory containing your custom libraries to the path
@@ -62,7 +61,7 @@ def uploadFiles():
         sorted_attachments = sorted(dated_attachments, key=lambda x: x.get('edit_date', ''))
         unique_values = {item['related_object_uuid'] for item in sorted_attachments}
     
-    for uuid in tqdm(unique_values):
+    for uuid in unique_values:
         try:
             job_data = sm8.get_job_by_uuid(uuid)
         except Exception as e:
@@ -123,7 +122,7 @@ def uploadFiles():
             video_folder = created_video_folder[1]
     
         job_attachments = [attachment for attachment in sorted_attachments if attachment['related_object_uuid'] == uuid]
-        for image in tqdm(job_attachments):
+        for image in job_attachments:
             attachment_uuid = image.get('uuid')
             attachment_name = image.get('attachment_name')
             if attachment_name.endswith(file_extensions):
