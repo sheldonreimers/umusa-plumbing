@@ -2,7 +2,7 @@
 '''
 cd /home/sheldonreimers/umusa-plumbing/file_uploader
 git add file_uploader.py
-git commit -m "Removing TQDM"
+git commit -m "Adding system variables"
 git push origin main
 '''
 # System Library Import & directories
@@ -39,6 +39,12 @@ def uploadFiles():
     gpy = GoogleSheets(umusa_secret)
     sm8 = ServiceM8(servicem8_secret)
     od = OneDrive(umusa_azure)
+
+    # Script Variables
+    servicem8_attachments_folder = '4B4564E48AE9C501!523357'
+    sa_timezone = pytz.timezone('Africa/Johannesburg')
+    now_date = dt.now(sa_timezone)
+    file_extensions = ('.jpg', '.pdf', '.mp4', '.png','.jpeg')
         
     def is_file(item):
         return 'file' in item  # This assumes that items will have a 'file' key if they are files
