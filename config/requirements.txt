@@ -45,3 +45,6 @@ opencv-python==4.9.0.80
 
 # IPython - Interactive computing in Python.
 ipython==8.15.0
+
+#Error Logging to allow for deeper debugging
+sentry-sdk==2.13.0
