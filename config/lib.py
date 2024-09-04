@@ -20,7 +20,6 @@ from io import BytesIO
 from PIL import Image as PILImage
 import fitz  # PyMuPDF
 from IPython.display import display, Image
-import cv2
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import HTTPError
 
