@@ -24,7 +24,7 @@ from requests.auth import HTTPBasicAuth
 from requests.exceptions import HTTPError
 
 # Google Libraries
-from apiclient.http import MediaIoBaseDownload
+from apiclient.http import MediaIoBaseDownload # type: ignore
 from googleapiclient.http import MediaFileUpload
 from googleapiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
