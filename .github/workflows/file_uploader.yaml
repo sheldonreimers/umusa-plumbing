@@ -4,8 +4,8 @@ name: Umusa Daily File Uploader
 # Controls when the workflow will run
 on:
   # Define schedule for cron job
-  schedule:
-    - cron: '0 4-18 * * *' # Runs from 4am UTC to 6pm UTC Daily
+  # schedule:
+    # - cron: '0 4-18 * * *' # Runs from 4am UTC to 6pm UTC Daily
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
