@@ -49,23 +49,15 @@
 #Error Logging to allow for deeper debugging
 # sentry-sdk==2.13.0
 
-csv
-datetime
 google-api-python-client
 google-auth
-io
 ipython
 json
 numpy
 oauth2client
-os
 pandas
 pillow
 pymupdf
 pytz
-re
 requests
 retry
-sys
-timedelta
-timezone
