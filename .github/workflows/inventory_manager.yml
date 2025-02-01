@@ -8,8 +8,8 @@ on:
   workflow_dispatch:
 
   # Define schedule for cron job
-  # schedule:
-  #  - cron: '0 2 * * *' # Runs every midnight on Sundays
+  schedule:
+   - cron: '0 2 * * *' # Runs every midnight on Sundays
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
