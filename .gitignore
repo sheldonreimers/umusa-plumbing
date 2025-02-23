@@ -163,3 +163,5 @@ cython_debug/
 .npm/
 sheldonreimers/
 .gitconfig
+docker-compose.yml
+Notebooks/
