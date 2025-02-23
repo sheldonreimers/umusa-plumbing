@@ -165,3 +165,4 @@ sheldonreimers/
 .gitconfig
 docker-compose.yml
 Notebooks/
+.bash_history
