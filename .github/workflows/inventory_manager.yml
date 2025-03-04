@@ -37,7 +37,7 @@ jobs:
 
       # Restore cached dependencies
       - name: Restore cached dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('config/requirements.txt') }}
@@ -48,7 +48,7 @@ jobs:
 
       # Cache dependencies for future runs
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('config/requirements.txt') }}
