@@ -705,7 +705,7 @@ class OneDrive():
                        }
         self.base_url = 'https://graph.microsoft.com/v1.0/me/drive'
 
-    def connect(self,client_id,client_secret,refresh_token)
+    def connect(self,client_id,client_secret,refresh_token):
         # Dict Creations
         token_data = { 'client_id': client_id
                       ,'client_secret': client_secret
@@ -716,6 +716,7 @@ class OneDrive():
         response = requests.post(self.token_endpoint, data=token_data)
         refresh_token = response.json()['refresh_token']
         access_token = response.json()['access_token']
+        print(response.json())
         return access_token
         
     def get_folders(self):
