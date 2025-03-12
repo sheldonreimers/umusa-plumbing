@@ -27,6 +27,8 @@ umusa_secret = json.loads(os.environ.get('UMUSA_SECRET'))
 servicem8_secret = os.environ.get('SERVICEM8_SECRET')
 umusa_azure = json.loads(os.environ.get('UMUSA_AZURE'))
 
+print(umusa_azure)
+
 # Used for Github running
 lrj_path = 'config/last_run.json'
 
