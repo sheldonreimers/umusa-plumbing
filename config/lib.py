@@ -714,9 +714,10 @@ class OneDrive():
                      }
         # POST for Access Tokens
         response = requests.post(self.token_endpoint, data=token_data)
+        print(response.status_code)
+        print(response.json())
         refresh_token = response.json()['refresh_token']
         access_token = response.json()['access_token']
-        print(response.json())
         return access_token
         
     def get_folders(self):
