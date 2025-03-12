@@ -689,33 +689,34 @@ class OneDrive():
     
     def __init__(self,secret_dict):
         # init Variables
-        scope = 'https://graph.microsoft.com/.default'
-        token_endpoint = 'https://login.microsoftonline.com/common/oauth2/v2.0/token'
+        self.scope = 'https://graph.microsoft.com/.default'
+        self.token_endpoint = 'https://login.microsoftonline.com/common/oauth2/v2.0/token'
         tenant_id = secret_dict['tenant_id']
         client_id = secret_dict['client_id']
         client_secret = secret_dict['client_secret']
         redirect_uri = secret_dict['redirect_uri']
         auth_code = secret_dict['auth_code']
         refresh_token = secret_dict['refresh_token']
-        
+        self.access_token = self.connect(client_id,client_secret,refresh_token)
+
+        #System Variables
+        self.headers = {'Authorization': f'Bearer {self.access_token}'
+                        ,'Content-Type': 'application/json'
+                       }
+        self.base_url = 'https://graph.microsoft.com/v1.0/me/drive'
+
+    def connect(self,client_id,client_secret,refresh_token)
         # Dict Creations
         token_data = { 'client_id': client_id
                       ,'client_secret': client_secret
                       ,'refresh_token': refresh_token
                       ,'grant_type': 'refresh_token'
                      }
-        
         # POST for Access Tokens
-        response = requests.post(token_endpoint, data=token_data)
-        self.refresh_token = response.json()['refresh_token']
-        self.access_token = response.json()['access_token']
-        
-        #System Variables
-        self.headers = {'Authorization': f'Bearer {self.access_token}'
-                        ,'Content-Type': 'application/json'
-                       }
-        self.base_url = 'https://graph.microsoft.com/v1.0/me/drive'
-        # print(self.refresh_token)
+        response = requests.post(self.token_endpoint, data=token_data)
+        refresh_token = response.json()['refresh_token']
+        access_token = response.json()['access_token']
+        return access_token
         
     def get_folders(self):
         endpoint = '/root/children'
