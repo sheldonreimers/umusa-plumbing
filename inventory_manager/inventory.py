@@ -153,10 +153,13 @@ else:
                                                                     )
                                    )
     
-        complete_ref = gsheet_df[[ 'full_name'
-                                  ,'inventory']].append(previous_day_agg_df[[ 'full_name'
-                                                                             ,'inventory']]
-                                                       ).drop_duplicates(ignore_index = True)
+        complete_ref = pd.concat(
+            [
+                gsheet_df[[ 'full_name', 'inventory' ]],
+                previous_day_agg_df[[ 'full_name', 'inventory' ]]
+            ],
+            ignore_index=True
+        ).drop_duplicates()
     
     
         full_merge = complete_ref.merge( gsheet_df
