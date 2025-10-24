@@ -39,8 +39,8 @@ class APIHandlers:
             servicem8_secret_name = "SERVICEM8_GITHUB_SECRET"
             deploy_type = 'PRODUCTION'
         else:
-            google_secret_name = "GOOGLE_SECRET"
-            servicem8_secret_name = "SERVICEM8_SECRET"
+            google_secret_name = "UMUSA_GOOGLE"
+            servicem8_secret_name = "UMUSA_SERVICEM8"
             deploy_type = 'STAGING'
         
         logging.info('API handlers initialized')
