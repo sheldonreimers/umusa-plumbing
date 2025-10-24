@@ -43,7 +43,7 @@ class APIHandlers:
             servicem8_secret_name = "SERVICEM8_SECRET"
             deploy_type = 'STAGING'
         
-        logging.info(f'Environment: {self.environment}, Deploy Type: {deploy_type}')
+        logging.info('API handlers initialized')
         
         # Initialize Google Sheets API
         try:

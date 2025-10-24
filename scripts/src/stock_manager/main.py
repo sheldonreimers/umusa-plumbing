@@ -36,28 +36,22 @@ def main():
         # Initialize configuration
         logging.info('Initializing configuration...')
         config = Config()
-        logging.info(f'Configuration: {config}')
         
         # Initialize API handlers
         logging.info('Initializing API handlers...')
         api_handlers = APIHandlers()
-        logging.info(f'API Handlers: {api_handlers}')
         
         # Initialize data handlers
         logging.info('Initializing data handlers...')
         data_handlers = DataHandlers(config, api_handlers)
-        logging.info(f'Data Handlers: {data_handlers}')
         
         # Initialize inventory processor
         logging.info('Initializing inventory processor...')
         inventory_processor = InventoryProcessor(config, api_handlers, data_handlers)
-        logging.info(f'Inventory Processor: {inventory_processor}')
         
         # Display processing summary
         summary = inventory_processor.get_processing_summary()
-        logging.info('Processing Summary:')
-        for key, value in summary.items():
-            logging.info(f'  {key}: {value}')
+        logging.info('Processing configuration loaded successfully')
         
         # Run the inventory processing workflow
         logging.info('Starting inventory processing workflow...')

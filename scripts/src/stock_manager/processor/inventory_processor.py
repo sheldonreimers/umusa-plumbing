@@ -197,7 +197,7 @@ class InventoryProcessor:
         Get a summary of the current processing configuration.
         
         Returns:
-            dict: Summary of configuration and settings.
+            dict: Summary of configuration and settings (excludes sensitive IDs).
         """
         return {
             'module': self.config.name,
@@ -205,9 +205,7 @@ class InventoryProcessor:
             'environment': self.config.environment,
             'search_date': self.config.search_date_str,
             'tab_name': self.config.tab_name,
-            'column_name': self.config.col_name,
-            'sheet_id': self.config.sheets_config.active_sheet_id,
-            'form_uuid': self.config.servicem8_config.form_uuid
+            'column_name': self.config.col_name
         }
 
     def __repr__(self) -> str:
