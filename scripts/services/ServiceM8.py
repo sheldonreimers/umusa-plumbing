@@ -64,14 +64,14 @@ class ServiceM8:
         """
         logging.info("Initializing ServiceM8 API client")
         
-        # Retrieve API key from SecretManager
-        secret_manager = SecretManager()
-        api_key = secret_manager.get_secret(secret_name, deploy_type)
+        # Retrieve API credentials from SecretManager
+        secret_manager = SecretManager(deploy_type=deploy_type)
+        credentials = secret_manager.get_secret(secret_name)
         
         self._base_url = 'https://api.servicem8.com/api_1.0'
         self._headers = {
             'accept': 'application/json',
-            'authorization': f'Basic {api_key}'
+            'authorization': credentials['authorization']
         }
 
     def _handle_response(self, response: requests.Response) -> None:

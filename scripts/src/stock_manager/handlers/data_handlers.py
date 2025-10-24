@@ -260,8 +260,12 @@ class DataHandlers:
             ignore_index=True
         ).drop_duplicates(ignore_index=True)
         
-        # Merge with current data
-        merge_columns = self.config.data_config.reference_columns + [col_name]
+        # Merge with current data - only include col_name if it exists
+        if col_name in current_data.columns:
+            merge_columns = self.config.data_config.reference_columns + [col_name]
+        else:
+            merge_columns = self.config.data_config.reference_columns
+            
         sum_merged = ref_df.merge(
             current_data[merge_columns],
             how='left',
@@ -270,16 +274,28 @@ class DataHandlers:
             summed_df,
             how='left',
             on=self.config.data_config.reference_columns
-        ).fillna(0).astype({
-            col_name + '_x': float,
-            col_name + '_y': float
-        })
+        ).fillna(0)
         
-        # Sum the two columns
-        sum_merged[col_name] = sum_merged[col_name + '_x'] + sum_merged[col_name + '_y']
-        
-        # Drop the temporary columns
-        sum_completed = sum_merged.drop(labels=[col_name + '_x', col_name + '_y'], axis=1)
+        # Handle column merging - check if columns exist before type conversion
+        if col_name + '_x' in sum_merged.columns and col_name + '_y' in sum_merged.columns:
+            # Both columns exist - sum them
+            sum_merged = sum_merged.astype({
+                col_name + '_x': float,
+                col_name + '_y': float
+            })
+            sum_merged[col_name] = sum_merged[col_name + '_x'] + sum_merged[col_name + '_y']
+            sum_completed = sum_merged.drop(labels=[col_name + '_x', col_name + '_y'], axis=1)
+        elif col_name + '_x' in sum_merged.columns:
+            # Only current data has the column
+            sum_merged = sum_merged.astype({col_name + '_x': float})
+            sum_completed = sum_merged.rename(columns={col_name + '_x': col_name})
+        elif col_name + '_y' in sum_merged.columns:
+            # Only new data has the column
+            sum_merged = sum_merged.astype({col_name + '_y': float})
+            sum_completed = sum_merged.rename(columns={col_name + '_y': col_name})
+        else:
+            # Neither has the column (shouldn't happen, but handle gracefully)
+            sum_completed = sum_merged
         
         # Merge back with all current data columns
         final_df = current_data.merge(
@@ -287,7 +303,11 @@ class DataHandlers:
             how='left',
             on=self.config.data_config.reference_columns,
             suffixes=('_cur', '')
-        ).drop(labels=col_name + '_cur', axis=1)
+        )
+        
+        # Drop the old column version if it exists
+        if col_name + '_cur' in final_df.columns:
+            final_df = final_df.drop(labels=col_name + '_cur', axis=1)
         
         logging.info(f'Final merged data: {len(final_df)} rows')
         return final_df
