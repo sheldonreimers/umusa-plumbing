@@ -96,10 +96,10 @@ class SecretManager:
             self._cache[secret_name] = secret
             return secret
         except json.JSONDecodeError as e:
-            logger.error(f"Failed to decode JSON secret: {secret_name}: {e}")
+            logger.error(f"Failed to decode JSON secret: {e}")
             raise
         except Exception as e:
-            logger.error(f"Error loading secret '{secret_name}': {e}")
+            logger.error(f"Error loading secret: {e}")
             raise
 
     def list_secrets(self) -> List[str]:
@@ -170,11 +170,11 @@ class SecretManager:
         for secret in client.secrets.list():
             if secret.name == secret_name:
                 if verbose:
-                    print(f"Secret '{secret_name}' exists. Removing...")
+                    print("Existing secret found. Removing...")
                 secret.remove()
         client.secrets.create(name=secret_name, data=value.encode("utf-8"))
         if verbose:
-            print(f"Secret '{secret_name}' created/updated.")
+            print("A secret was created/updated.")
         self._ensure_secret_in_stack(secret_name, verbose=verbose)
         self._redeploy_stack(verbose=verbose)
 
@@ -201,10 +201,10 @@ class SecretManager:
                 secret.remove()
                 found = True
                 if verbose:
-                    print(f"Secret '{secret_name}' removed from Swarm.")
+                    print("A secret was removed from Swarm.")
                 break
         if not found and verbose:
-            print(f"Secret '{secret_name}' not found in Swarm.")
+            print("No matching secret found for removal.")
 
         if remove_from_stack:
             self._remove_secret_from_stack(secret_name, verbose=verbose)
@@ -232,7 +232,7 @@ class SecretManager:
         if secret_name not in stack["secrets"]:
             stack["secrets"][secret_name] = {"external": True}
             if verbose:
-                print(f"Added secret '{secret_name}' to stack-level secrets.")
+                print("A secret was added to stack-level secrets.")
         for service in service_names:
             if service in stack["services"]:
                 service_def = stack["services"][service]
@@ -241,7 +241,7 @@ class SecretManager:
                 if secret_name not in service_def["secrets"]:
                     service_def["secrets"].append(secret_name)
                     if verbose:
-                        print(f"Added secret '{secret_name}' to service '{service}'.")
+                        print(f"A secret was added to service '{service}'.")
         with open(stack_file, "w") as f:
             yaml.dump(stack, f, sort_keys=False)
         if verbose:
@@ -288,7 +288,7 @@ class SecretManager:
         if "secrets" in stack and secret_name in stack["secrets"]:
             del stack["secrets"][secret_name]
             if verbose:
-                print(f"Secret '{secret_name}' removed from stack-level secrets.")
+                print("A secret was removed from stack-level secrets.")
 
         # Remove from each service
         for service in service_names:
@@ -297,7 +297,7 @@ class SecretManager:
                 if "secrets" in service_def and secret_name in service_def["secrets"]:
                     service_def["secrets"].remove(secret_name)
                     if verbose:
-                        print(f"Secret '{secret_name}' removed from service '{service}'.")
+                        print(f"A secret was removed from service '{service}'.")
 
         with open(stack_file, "w") as f:
             yaml.dump(stack, f, sort_keys=False)
