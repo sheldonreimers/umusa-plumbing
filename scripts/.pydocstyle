@@ -1,0 +1,4 @@
+[pydocstyle]
+convention = google
+add-ignore = D100,D104,D107
+match-dir = ^(?!(\.|__pycache__|wip_services|Template|Notebooks|OpenAI|sheldonreimers)).*
