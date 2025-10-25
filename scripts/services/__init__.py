@@ -26,6 +26,13 @@ except ImportError as e:
     logging.warning(f"ServiceM8 not available: {e}")
 
 try:
+    from .OneDrive import OneDrive
+    __all__.append("OneDrive")
+except ImportError as e:
+    import logging
+    logging.warning(f"OneDrive not available: {e}")
+
+try:
     from .dbtAPI import dbtAPI
     __all__.append("dbtAPI")
 except ImportError:

@@ -1,5 +1,4 @@
-"""
-This module defines the processor class for the Stock Manager module.
+"""This module defines the processor class for the Stock Manager module.
 
 The InventoryProcessor orchestrates the complete workflow of fetching,
 processing, and writing inventory data from ServiceM8 to Google Sheets.
@@ -14,7 +13,6 @@ from ..config import Config
 from ..handlers.api_handlers import APIHandlers
 from ..handlers.data_handlers import DataHandlers
 
-
 logging.basicConfig(level=logging.INFO)
 
 
@@ -27,8 +25,7 @@ class InventoryProcessor:
         api_handlers: APIHandlers,
         data_handlers: DataHandlers
     ):
-        """
-        Initialize InventoryProcessor with config, API, and data handlers.
+        """Initialize InventoryProcessor with config, API, and data handlers.
 
         Args:
             config (Config): Configuration object containing sheet and date settings.
@@ -41,8 +38,7 @@ class InventoryProcessor:
         logging.info('InventoryProcessor initialized')
 
     def process(self) -> bool:
-        """
-        Execute the complete inventory processing workflow.
+        """Execute the complete inventory processing workflow.
         
         This method:
         1. Fetches staff data
@@ -141,8 +137,7 @@ class InventoryProcessor:
             return False
 
     def _create_new_tab(self) -> None:
-        """
-        Create a new tab in the Google Sheet.
+        """Create a new tab in the Google Sheet.
         
         Raises:
             Exception: If tab creation fails.
@@ -162,8 +157,7 @@ class InventoryProcessor:
         df: pd.DataFrame,
         is_new_tab: bool
     ) -> None:
-        """
-        Write DataFrame to Google Sheets.
+        """Write DataFrame to Google Sheets.
         
         Args:
             df: DataFrame to write.
@@ -193,8 +187,7 @@ class InventoryProcessor:
             raise
 
     def get_processing_summary(self) -> dict:
-        """
-        Get a summary of the current processing configuration.
+        """Get a summary of the current processing configuration.
         
         Returns:
             dict: Summary of configuration and settings (excludes sensitive IDs).

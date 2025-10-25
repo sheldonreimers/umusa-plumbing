@@ -5,9 +5,10 @@ system including date calculations, sheet IDs, form IDs, and staff filtering.
 """
 
 import os
-import pytz
 from datetime import datetime, timedelta
-from typing import Optional, Dict
+from typing import Dict, Optional
+
+import pytz
 
 
 class Config:
@@ -52,8 +53,7 @@ class Config:
         self.data_config = DataProcessingConfig()
 
     def _calculate_dates(self) -> None:
-        """
-        Calculate search_date, week_date, and tab_name based on current date/time.
+        """Calculate search_date, week_date, and tab_name based on current date/time.
         
         Logic:
         - If Monday (weekday=0): week_date is 7 days ago
@@ -106,8 +106,7 @@ class ServiceM8Config:
         form_uuid: str,
         active_staff_security_role: str
     ):
-        """
-        Initialize ServiceM8 configuration.
+        """Initialize ServiceM8 configuration.
         
         Args:
             form_uuid: The UUID of the inventory form in ServiceM8.
@@ -135,8 +134,7 @@ class SheetsConfig:
         test_sheet_id: str,
         environment: str = 'STAGING'
     ):
-        """
-        Initialize Google Sheets configuration.
+        """Initialize Google Sheets configuration.
         
         Args:
             primary_sheet_id: The production Google Sheet ID.
@@ -216,8 +214,7 @@ class DataProcessingConfig:
         self.decimal_separator_to = '.'
 
     def get_column_rename_map(self, col_name: str) -> Dict[str, str]:
-        """
-        Get the column rename mapping for aggregation.
+        """Get the column rename mapping for aggregation.
         
         Args:
             col_name: The target column name for the date.

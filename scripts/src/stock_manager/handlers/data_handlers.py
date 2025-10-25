@@ -1,12 +1,11 @@
-"""
-This module contains the DataHandlers class.
+"""This module contains the DataHandlers class.
 
 It handles operations related to processing Stock Manager data including
 fetching staff, form responses, and performing data transformations.
 """
 
 import logging
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 import pandas as pd
 
@@ -29,8 +28,7 @@ class DataHandlers:
         logging.info('DataHandlers initialized')
 
     def fetch_staff_data(self) -> pd.DataFrame:
-        """
-        Fetch all staff data from ServiceM8 and filter to active staff.
+        """Fetch all staff data from ServiceM8 and filter to active staff.
 
         Returns:
             DataFrame with active staff members including uuid, first, last, and full_name.
@@ -57,8 +55,7 @@ class DataHandlers:
         return active_staff
 
     def fetch_form_responses(self, search_date: str) -> List[List[Dict]]:
-        """
-        Fetch form responses from ServiceM8 for a specific date.
+        """Fetch form responses from ServiceM8 for a specific date.
 
         Args:
             search_date: The date to search for form responses (YYYY-MM-DD format).
@@ -77,8 +74,7 @@ class DataHandlers:
         return form_responses
 
     def filter_form_answers(self, form_responses: List[List[Dict]]) -> List[Dict]:
-        """
-        Filter form responses to only include Number type fields.
+        """Filter form responses to only include Number type fields.
 
         Args:
             form_responses: List of form response lists from ServiceM8.
@@ -103,8 +99,7 @@ class DataHandlers:
         return flattened_answers
 
     def create_response_dataframe(self, filtered_answers: List[Dict]) -> pd.DataFrame:
-        """
-        Convert filtered answers to a DataFrame.
+        """Convert filtered answers to a DataFrame.
 
         Args:
             filtered_answers: List of filtered form answer dictionaries.
@@ -121,8 +116,7 @@ class DataHandlers:
         response_df: pd.DataFrame,
         staff_df: pd.DataFrame
     ) -> pd.DataFrame:
-        """
-        Merge response data with staff data and clean up columns.
+        """Merge response data with staff data and clean up columns.
 
         Args:
             response_df: DataFrame with form responses.
@@ -150,8 +144,7 @@ class DataHandlers:
         merged_df: pd.DataFrame,
         col_name: str
     ) -> pd.DataFrame:
-        """
-        Clean response data and aggregate by staff and question.
+        """Clean response data and aggregate by staff and question.
 
         Args:
             merged_df: Merged DataFrame with staff and response data.
@@ -194,8 +187,7 @@ class DataHandlers:
         tab_name: str,
         starting_cell: str
     ) -> pd.DataFrame:
-        """
-        Fetch current data from Google Sheet tab.
+        """Fetch current data from Google Sheet tab.
 
         Args:
             sheet_id: The Google Sheet ID.
@@ -238,8 +230,7 @@ class DataHandlers:
         current_data: pd.DataFrame,
         col_name: str
     ) -> pd.DataFrame:
-        """
-        Merge new summed data with existing sheet data.
+        """Merge new summed data with existing sheet data.
 
         Args:
             summed_df: New aggregated data.

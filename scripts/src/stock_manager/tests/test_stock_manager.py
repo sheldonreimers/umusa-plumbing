@@ -1,14 +1,14 @@
-"""
-Unit tests for the Stock Manager module.
+"""Unit tests for the Stock Manager module.
 
 This module validates integration logic using real API calls for data fetching
 and mocked write operations to prevent actual data modifications during testing.
 """
 
 import logging
-import pytest
 from unittest.mock import MagicMock, patch
+
 import pandas as pd
+import pytest
 
 from ..config import Config
 from ..handlers.api_handlers import APIHandlers
@@ -219,8 +219,7 @@ class TestIntegrationSmoke:
     @patch('src.stock_manager.handlers.api_handlers.GoogleSheets.df_to_sheet')
     @patch('src.stock_manager.handlers.api_handlers.GoogleSheets.create_tab')
     def test_full_workflow_smoke(self, mock_create_tab, mock_df_to_sheet, caplog):
-        """
-        Full workflow smoke test.
+        """Full workflow smoke test.
         
         This test:
         - Uses REAL config
