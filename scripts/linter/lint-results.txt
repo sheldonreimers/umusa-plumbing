@@ -1,0 +1,88 @@
+
+=== BLACK ===
+All Good, No errors & warnings.
+
+=== ISORT ===
+All Good, No errors & warnings.
+
+=== FLAKE8 ===
+/home/Umusa/scripts/fix_docstrings.py:9:1: C901 'fix_docstring_issues' is too complex (15)
+/home/Umusa/scripts/linter/naming_checks.py:31:1: C901 'check_file' is too complex (15)
+/home/Umusa/scripts/linter/summary.py:178:1: C901 'main' is too complex (16)
+/home/Umusa/scripts/services/GoogleDrive.py:46:13: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/services/GoogleSheets.py:56:13: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/services/Logger.py:27:13: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/services/OneDrive.py:1:64: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/services/SecretManager.py:35:13: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/services/ServiceM8.py:62:13: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/services/__init__.py:15:5: F401 '.GoogleSheets.GoogleSheets' imported but unused
+/home/Umusa/scripts/services/__init__.py:24:5: F401 '.ServiceM8.ServiceM8' imported but unused
+/home/Umusa/scripts/services/__init__.py:33:5: F401 '.dbtAPI.dbtAPI' imported but unused
+/home/Umusa/scripts/services/__init__.py:40:5: F401 '.GoogleDrive.GoogleDrive' imported but unused
+/home/Umusa/scripts/services/__init__.py:47:5: F401 '.OpenCX.OpenCX' imported but unused
+/home/Umusa/scripts/services/__init__.py:54:5: F401 '.Intercom.Intercom' imported but unused
+/home/Umusa/scripts/services/__init__.py:61:5: F401 '.GoogleChat.GoogleChat' imported but unused
+/home/Umusa/scripts/services/__init__.py:68:5: F401 '.GoogleBigQuery.GoogleBigQuery' imported but unused
+/home/Umusa/scripts/services/__init__.py:75:5: F401 '.HubspotAPI.AssociationTypes' imported but unused
+/home/Umusa/scripts/services/__init__.py:75:5: F401 '.HubspotAPI.HubspotAPI' imported but unused
+/home/Umusa/scripts/src/attachment_sync/__init__.py:1:74: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/src/attachment_sync/config.py:1:50: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/src/attachment_sync/handlers/__init__.py:1:44: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/src/attachment_sync/handlers/api_handlers.py:1:82: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/src/attachment_sync/handlers/file_handlers.py:1:80: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/src/attachment_sync/main.py:1:53: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/src/attachment_sync/processor/__init__.py:1:45: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/src/attachment_sync/processor/upload_processor.py:1:76: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/src/script_template/handlers/api_handlers.py:23:13: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/src/script_template/handlers/data_handlers.py:24:13: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/src/script_template/processor/processorTemplate.py:38:13: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/src/stock_manager/config.py:64:44: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/src/stock_manager/handlers/api_handlers.py:30:13: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/src/stock_manager/handlers/data_handlers.py:25:13: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/src/stock_manager/main.py:52:9: F841 local variable 'summary' is assigned to but never used
+/home/Umusa/scripts/src/stock_manager/processor/inventory_processor.py:34:13: E999 SyntaxError: invalid syntax
+/home/Umusa/scripts/src/stock_manager/tests/test_stock_manager.py:230:13: E999 SyntaxError: invalid syntax
+
+=== PYDOCSTYLE ===
+WARNING: Error in file /home/Umusa/scripts/services/GoogleDrive.py: Cannot parse file.
+WARNING: Error in file /home/Umusa/scripts/services/SecretManager.py: Cannot parse file.
+WARNING: Error in file /home/Umusa/scripts/services/GoogleSheets.py: Cannot parse file.
+WARNING: Error in file /home/Umusa/scripts/services/Logger.py: Cannot parse file.
+WARNING: Error in file /home/Umusa/scripts/services/OneDrive.py: Cannot parse file.
+WARNING: Error in file /home/Umusa/scripts/services/ServiceM8.py: Cannot parse file.
+WARNING: Error in file /home/Umusa/scripts/src/attachment_sync/config.py: Cannot parse file.
+WARNING: Error in file /home/Umusa/scripts/src/attachment_sync/__init__.py: Cannot parse file.
+WARNING: Error in file /home/Umusa/scripts/src/attachment_sync/main.py: Cannot parse file.
+WARNING: Error in file /home/Umusa/scripts/src/attachment_sync/processor/__init__.py: Cannot parse file.
+WARNING: Error in file /home/Umusa/scripts/src/attachment_sync/processor/upload_processor.py: Cannot parse file.
+WARNING: Error in file /home/Umusa/scripts/src/attachment_sync/handlers/__init__.py: Cannot parse file.
+WARNING: Error in file /home/Umusa/scripts/src/attachment_sync/handlers/api_handlers.py: Cannot parse file.
+WARNING: Error in file /home/Umusa/scripts/src/attachment_sync/handlers/file_handlers.py: Cannot parse file.
+WARNING: Error in file /home/Umusa/scripts/src/stock_manager/config.py: Cannot parse file.
+WARNING: Error in file /home/Umusa/scripts/src/stock_manager/processor/inventory_processor.py: Cannot parse file.
+WARNING: Error in file /home/Umusa/scripts/src/stock_manager/handlers/api_handlers.py: Cannot parse file.
+WARNING: Error in file /home/Umusa/scripts/src/stock_manager/handlers/data_handlers.py: Cannot parse file.
+WARNING: Error in file /home/Umusa/scripts/src/script_template/processor/processorTemplate.py: Cannot parse file.
+WARNING: Error in file /home/Umusa/scripts/src/script_template/handlers/api_handlers.py: Cannot parse file.
+WARNING: Error in file /home/Umusa/scripts/src/script_template/handlers/data_handlers.py: Cannot parse file.
+
+=== DARGLINT ===
+'PythonSyntaxError' object has no attribute 'function'
+
+=== NAMING ===
+Traceback (most recent call last):
+  File "/home/Umusa/scripts/linter/naming_checks.py", line 95, in <module>
+    main()
+  File "/home/Umusa/scripts/linter/naming_checks.py", line 88, in main
+    all_warnings.extend(check_file(file))
+                        ^^^^^^^^^^^^^^^^
+  File "/home/Umusa/scripts/linter/naming_checks.py", line 43, in check_file
+    tree = ast.parse(f.read(), filename=file_path)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/ast.py", line 50, in parse
+    return compile(source, filename, mode, flags,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/Umusa/scripts/services/GoogleDrive.py", line 46
+    """self.secret_name = secret_name
+       ^^^^
+SyntaxError: invalid syntax
