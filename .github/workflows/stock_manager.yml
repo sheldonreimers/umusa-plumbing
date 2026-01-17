@@ -1,0 +1,181 @@
+name: "Stock Manager Workflow"
+
+permissions:
+  contents: read
+
+on:
+  push:
+    paths:
+      - 'scripts/src/stock_manager/**'
+      - 'scripts/services/ServiceM8.py'
+      - 'scripts/services/GoogleSheets.py'
+      - 'scripts/services/SecretManager.py'
+      - 'scripts/services/__init__.py'
+      - '.github/workflows/stock_manager.yml'
+      - '!**/README.md'
+      - '!**/README.MD'
+      - '!**/readme.md'
+  workflow_dispatch:
+  schedule:
+    # Run daily at 7:00 AM UTC (9:00 AM South Africa time)
+    - cron: '0 7 * * *'
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_ENV: PRODUCTION
+      GOOGLE_GITHUB_SECRET: ${{ secrets.UMUSA_SECRET }}
+      SERVICEM8_GITHUB_SECRET: ${{ secrets.SERVICEM8_SECRET }}
+      PYTHONPATH: /home/runner/work/umusa-plumbing/umusa-plumbing:/home/runner/work/umusa-plumbing/umusa-plumbing/scripts
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Cache Virtual Environment
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: ${{ runner.os }}-venv-${{ hashFiles('scripts/services/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-venv-
+      
+      - name: Create Virtual Environment and Install Dependencies
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install -r scripts/services/requirements.txt
+
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_ENV: PRODUCTION
+      GOOGLE_GITHUB_SECRET: ${{ secrets.UMUSA_SECRET }}
+      SERVICEM8_GITHUB_SECRET: ${{ secrets.SERVICEM8_SECRET }}
+      PYTHONPATH: /home/runner/work/umusa-plumbing/umusa-plumbing:/home/runner/work/umusa-plumbing/umusa-plumbing/scripts
+    if: github.event_name == 'push'
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Cache Virtual Environment
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: ${{ runner.os }}-venv-${{ hashFiles('scripts/services/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-venv-
+      
+      - name: Install Dependencies
+        run: |
+          .venv/bin/pip install -r scripts/services/requirements.txt
+          .venv/bin/pip install -U pytest
+      
+      - name: Run Stock Manager tests (pytest)
+        run: |
+          PYTHONPATH=$PYTHONPATH:$(pwd)/scripts .venv/bin/pytest -v scripts/src/stock_manager/tests/ -o log_cli=true --maxfail=1
+        working-directory: .
+      
+      - name: Debug - List all files created
+        run: |
+          echo "=== Debugging file creation ==="
+          echo "Current working directory: $(pwd)"
+          echo "All log files found:"
+          find . -name "*.log*" -type f 2>/dev/null || echo "No log files found"
+          echo "All files in scripts/src/stock_manager/:"
+          ls -la scripts/src/stock_manager/ 2>/dev/null || echo "Directory not found"
+        if: always()
+      
+      - name: Upload test log artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: stock-manager-test-logs-${{ github.run_id }}
+          path: |
+            scripts/src/stock_manager/**/*.log*
+            scripts/*.log*
+            *.log*
+          retention-days: 30
+
+  production:
+    needs: setup
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_ENV: PRODUCTION
+      GOOGLE_GITHUB_SECRET: ${{ secrets.UMUSA_SECRET }}
+      SERVICEM8_GITHUB_SECRET: ${{ secrets.SERVICEM8_SECRET }}
+      PYTHONPATH: /home/runner/work/umusa-plumbing/umusa-plumbing:/home/runner/work/umusa-plumbing/umusa-plumbing/scripts
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Cache Virtual Environment
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: ${{ runner.os }}-venv-${{ hashFiles('scripts/services/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-venv-
+      
+      - name: Install Dependencies
+        run: |
+          .venv/bin/pip install -r scripts/services/requirements.txt
+      
+      - name: Run Stock Manager main.py
+        run: |
+          echo "About to run Stock Manager main.py"
+          echo "Current directory: $(pwd)"
+          echo "PYTHONPATH: $PYTHONPATH"
+          echo "Deployment Environment: $DEPLOY_ENV"
+          PYTHONPATH=$PYTHONPATH:$(pwd) ../.venv/bin/python -m stock_manager.main || echo "Script execution completed (may have failed)"
+        working-directory: scripts/src
+      
+      - name: Debug - List all files created
+        run: |
+          echo "=== Debugging file creation ==="
+          echo "Current working directory: $(pwd)"
+          echo "Scripts directory contents:"
+          ls -la scripts/ 2>/dev/null || echo "Scripts directory not found"
+          echo "Stock Manager directory contents:"
+          ls -la scripts/src/stock_manager/ 2>/dev/null || echo "Stock Manager directory not found"
+          echo "All log files found:"
+          find . -name "*.log*" -type f 2>/dev/null || echo "No log files found"
+          echo "Working directory when script ran:"
+          echo "Files in scripts/src/stock_manager after execution:"
+          find scripts/src/stock_manager/ -type f 2>/dev/null || echo "No files in stock_manager directory"
+        if: always()
+      
+      - name: Upload production log artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: stock-manager-production-logs-${{ github.run_id }}
+          path: |
+            scripts/src/stock_manager/**/*.log*
+            scripts/src/stock_manager/*.log*
+            scripts/*.log*
+            *.log*
+          retention-days: 30
+      
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "Stock Manager workflow failed!"
+          echo "Check the logs for details."
+          # Add notification logic here (e.g., Slack, email, etc.)

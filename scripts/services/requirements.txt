@@ -1,0 +1,239 @@
+# httplib2
+# Comprehensive HTTP client library in Python
+# More info: https://pypi.org/project/httplib2/
+httplib2==0.22.0
+
+# numpy
+# Powerful data structures and data analysis tools for Python
+# More info: https://pypi.org/project/numpy/
+numpy==2.3.2
+
+# pandas
+# Data manipulation and analysis library
+# More info: https://pypi.org/project/pandas/
+pandas==2.3.1
+
+# pytz
+# Time zone library for Python
+# More info: https://pypi.org/project/pytz/
+pytz==2023.3
+
+# urllib3
+# Python HTTP library with thread-safe connection pooling
+# More info: https://pypi.org/project/urllib3/
+urllib3==1.26.19
+
+# google-api-python-client
+# Client library for accessing Google APIs
+# More info: https://pypi.org/project/google-api-python-client/
+google-api-python-client==2.146.0
+
+# google-auth
+# Python client library for Google authentication
+# More info: https://pypi.org/project/google-auth/
+google-auth==2.20.0
+
+# google-auth-httplib2
+# Python library to support Google Auth with HTTP libraries
+# More info: https://pypi.org/project/google-auth-httplib2/
+google-auth-httplib2==0.2.0
+
+# tqdm
+# A fast, extensible progress bar for Python
+# More info: https://pypi.org/project/tqdm/
+tqdm==4.66.3
+
+# retry
+# Simple, customizable retry decorator for Python functions
+# More info: https://pypi.org/project/retry/
+retry==0.9.2
+
+# PyMuPDF
+# Python binding for the MuPDF library, used for PDF processing
+# More info: https://pypi.org/project/PyMuPDF/
+PyMuPDF==1.25.4
+
+# opencv-python
+# OpenCV - Computer vision tasks
+# More info: https://pypi.org/project/opencv-python/
+opencv-python==4.9.0.80
+
+# requests
+# Python HTTP library for making requests
+# More info: https://pypi.org/project/requests/
+requests==2.32.4
+
+# pyyaml
+# YAML parser and emitter for Python
+# More info: https://pypi.org/project/pyyaml/
+pyyaml==6.0.2
+
+# sqlalchemy
+# SQL toolkit and Object-Relational Mapping library
+# More info: https://pypi.org/project/sqlalchemy/
+sqlalchemy==2.0.37
+
+# beautifulsoup4
+# Web scraping library for Python
+# More info: https://pypi.org/project/beautifulsoup4/
+beautifulsoup4==4.12.2
+
+# retrying
+# Retry decorator for error handling
+# More info: https://pypi.org/project/retrying/
+retrying==1.3.3
+
+# mailchimp3
+# Python client for Mailchimp API
+# More info: https://pypi.org/project/mailchimp3/
+mailchimp3==3.0.21
+
+# pydantic
+# Data validation and settings management using Python type annotations
+# More info: https://pypi.org/project/pydantic/
+pydantic==2.10.6
+
+# psycopg
+# PostgreSQL database adapter for Python (psycopg 3)
+# More info: https://pypi.org/project/psycopg/
+psycopg==3.2.6
+
+# psycopg-pool
+# PostgreSQL connection pool for psycopg 3
+# More info: https://pypi.org/project/psycopg-pool/
+psycopg-pool==3.2.6
+
+# psycopg-binary
+# Binary package for psycopg 3
+# More info: https://pypi.org/project/psycopg-binary/
+psycopg-binary==3.2.6
+
+# psycopg2-binary
+# PostgreSQL adapter for Python (binary)
+# More info: https://pypi.org/project/psycopg2-binary/
+psycopg2-binary==2.9.9
+
+# termcolor
+# Color formatting for output in terminal
+# More info: https://pypi.org/project/termcolor/
+termcolor==2.5.0
+
+# pre-commit
+# Framework for managing and maintaining multi-language pre-commit hooks
+# More info: https://pypi.org/project/pre-commit/
+pre-commit>=3.4.0
+
+# python-dateutil
+# Date/time handling library
+# More info: https://pypi.org/project/python-dateutil/
+python-dateutil==2.9.0
+
+# Pillow
+# Python Imaging Library for image processing
+# More info: https://pypi.org/project/Pillow/
+Pillow>7.1.0,<11.0.0
+
+# black
+# The uncompromising code formatter
+# More info: https://pypi.org/project/black/
+black==25.1.0
+
+# isort
+# Python utility for sorting imports
+# More info: https://pypi.org/project/isort/
+isort==6.0.1
+
+# flake8
+# Python code analysis tool
+# More info: https://pypi.org/project/flake8/
+flake8==7.3.0
+
+# pydocstyle
+# Python docstring style checker
+# More info: https://pypi.org/project/pydocstyle/
+pydocstyle==6.3.0
+
+# darglint
+# Python docstring linter
+# More info: https://pypi.org/project/darglint/
+darglint==1.8.1
+
+# oauth2client
+# OAuth 2.0 client library for Python
+# More info: https://pypi.org/project/oauth2client/
+oauth2client==4.1.3
+
+# Flask
+# Web framework for hosting Apps
+# More info: https://pypi.org/project/Flask/
+Flask==3.0.0
+
+# pendulum
+# Library for manipulating datetimes in Python
+# More info: https://pypi.org/project/pendulum/
+pendulum>=3.0.0
+
+# pretty-html-table
+# Library for creating HTML tables
+# More info: https://pypi.org/project/pretty-html-table/
+pretty-html-table==0.9.16
+
+# PyJWT
+# JSON Web Tokens (JWT) library
+# More info: https://pypi.org/project/PyJWT/
+PyJWT==2.7.0
+
+# pyspark
+# Apache Spark Python API
+# More info: https://pypi.org/project/pyspark/
+pyspark==3.4.0
+
+# requests-file
+# A file interface for requests
+# More info: https://pypi.org/project/requests-file/
+requests-file==1.5.1
+
+# requests-toolbelt
+# A collection of utility belts for requests
+# More info: https://pypi.org/project/requests-toolbelt/
+requests-toolbelt==0.9.1
+
+# matplotlib
+# Data visualization library for Python
+# More info: https://pypi.org/project/matplotlib/
+matplotlib==3.7.1
+
+# streamlit
+# Data app framework
+# More info: https://pypi.org/project/streamlit/
+streamlit==1.47.1
+
+# pytest
+# Python testing framework
+# More info: https://pypi.org/project/pytest/
+pytest==7.3.0
+
+# m2r2
+# Markdown to reStructuredText converter
+# More info: https://pypi.org/project/m2r2/
+m2r2==0.2.7
+
+# docker
+# Python client for Docker (Docker SDK for Python)
+# More info: https://pypi.org/project/docker/
+docker==7.1.0
+
+# google-cloud-bigquery
+# Google Cloud BigQuery API client library
+# More info: https://pypi.org/project/google-cloud-bigquery/
+google-cloud-bigquery==3.25.0
+
+# google-cloud-bigquery-storage
+# Google Cloud BigQuery Storage API client library
+# More info: https://pypi.org/project/google-cloud-bigquery-storage/
+google-cloud-bigquery-storage==2.25.0
+
+# pyarrow
+# Python library for Apache Arrow
+# More info: https://pypi.org/project/pyarrow/
+pyarrow==17.0.0

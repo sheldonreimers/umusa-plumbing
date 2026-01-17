@@ -1,0 +1,1 @@
+"""Processor package for the {{ ModuleName }} script."""

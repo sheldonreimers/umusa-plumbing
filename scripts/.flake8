@@ -1,0 +1,20 @@
+[flake8]
+max-line-length = 100
+extend-ignore = E203, E266, E501, W503
+exclude = 
+    .git,
+    __pycache__,
+    .ipynb_checkpoints,
+    .Trash-0,
+    wip_services,
+    Template,
+    Template Scripts,
+    .pytest_cache,
+    venv,
+    .venv,
+    Notebooks,
+    OpenAI,
+    sheldonreimers
+max-complexity = 10
+docstring-convention = google
+strictness = short
